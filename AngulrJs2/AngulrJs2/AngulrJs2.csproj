@@ -60,6 +60,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Angular\StyleSheet1.css" />
     <Content Include="Comp\Tester.html" />
     <Content Include="gulpfile.js" />
     <Content Include="Web.config" />
