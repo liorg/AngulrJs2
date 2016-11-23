@@ -64,6 +64,7 @@
   <ItemGroup>
     <Content Include="Angular\StyleSheet1.css" />
     <Content Include="App\app.component.css" />
+    <Content Include="App\FlightPostponed\passangers.component.html" />
     <Content Include="App\home\welcome.component.html" />
     <Content Include="App\products\products.component.html" />
     <Content Include="Comp\Tester.html" />
@@ -465,8 +466,10 @@
   <ItemGroup>
     <TypeScriptCompile Include="App\app.component.ts" />
     <TypeScriptCompile Include="App\app.module.ts" />
+    <TypeScriptCompile Include="App\FlightPostponed\passangers.component.ts" />
     <TypeScriptCompile Include="App\home\welcome.component.ts" />
     <TypeScriptCompile Include="App\main.ts" />
+    <TypeScriptCompile Include="App\products\Product.service.ts" />
     <TypeScriptCompile Include="App\products\products.component.ts" />
     <TypeScriptCompile Include="ts\Account\Account.ts" />
     <TypeScriptCompile Include="ts\Account\Logger.ts" />
