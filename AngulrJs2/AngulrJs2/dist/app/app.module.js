@@ -1,4 +1,4 @@
-System.register(['@angular/core', '@angular/platform-browser', '@angular/router', '@angular/http', './app.component', './home/welcome.component', './products/products.component'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/platform-browser', '@angular/router', '@angular/http', './app.component', './home/welcome.component', './products/products.component', './FlightPostponed/passangers.component', './products/product.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['@angular/core', '@angular/platform-browser', '@angular/router'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, platform_browser_1, router_1, http_1, app_component_1, welcome_component_1, products_component_1;
+    var core_1, platform_browser_1, router_1, http_1, app_component_1, welcome_component_1, products_component_1, passangers_component_1, product_service_1;
     var AppModule;
     return {
         setters:[
@@ -34,6 +34,12 @@ System.register(['@angular/core', '@angular/platform-browser', '@angular/router'
             },
             function (products_component_1_1) {
                 products_component_1 = products_component_1_1;
+            },
+            function (passangers_component_1_1) {
+                passangers_component_1 = passangers_component_1_1;
+            },
+            function (product_service_1_1) {
+                product_service_1 = product_service_1_1;
             }],
         execute: function() {
             AppModule = (function () {
@@ -44,11 +50,15 @@ System.register(['@angular/core', '@angular/platform-browser', '@angular/router'
                         imports: [platform_browser_1.BrowserModule, http_1.HttpModule, router_1.RouterModule.forRoot([
                                 { path: 'welcome', component: welcome_component_1.WelcomeComponent },
                                 { path: 'products', component: products_component_1.ProductsComponent },
+                                { path: 'passangers', component: passangers_component_1.PassangersComponent },
                                 { path: '', redirectTo: 'welcome', pathMatch: 'full' },
                                 { path: '**', redirectTo: 'welcome', pathMatch: 'full' }
                             ])],
-                        declarations: [app_component_1.AppComponent, products_component_1.ProductsComponent, welcome_component_1.WelcomeComponent],
-                        bootstrap: [app_component_1.AppComponent]
+                        declarations: [app_component_1.AppComponent, products_component_1.ProductsComponent, welcome_component_1.WelcomeComponent, passangers_component_1.PassangersComponent],
+                        bootstrap: [app_component_1.AppComponent],
+                        providers: [
+                            product_service_1.ProductService
+                        ]
                     }), 
                     __metadata('design:paramtypes', [])
                 ], AppModule);

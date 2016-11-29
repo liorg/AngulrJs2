@@ -11,29 +11,29 @@ System.register(['@angular/core'], function(exports_1, context_1) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var AppComponent;
+    var PassangersComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             }],
         execute: function() {
-            AppComponent = (function () {
-                function AppComponent() {
-                    this.pageTitle = 'Flight Postponed';
+            PassangersComponent = (function () {
+                function PassangersComponent() {
+                    this.PassangersTitle = 'Passangers List';
                 }
-                AppComponent = __decorate([
+                PassangersComponent = __decorate([
                     core_1.Component({
-                        selector: 'pm-app',
-                        template: "\n    <div>\n        <nav class='navbar navbar-default'>\n            <div class='container-fluid'>\n                <a class='navbar-brand'>{{pageTitle}}</a>\n                <ul class='nav navbar-nav'>\n                    <li><a [routerLink]=\"['/welcome']\">Home</a></li>\n                    <li><a [routerLink]=\"['/passangers']\">passangers List</a></li>\n                    <li><a [routerLink]=\"['/products']\">Product List</a></li>\n                </ul>\n            </div>\n        </nav>\n        <div class='container'>\n            <router-outlet></router-outlet>\n        </div>\n     </div>\n     "
+                        selector: 'pm-passangers',
+                        templateUrl: 'app/FlightPostponed/passangers.component.html'
                     }), 
                     __metadata('design:paramtypes', [])
-                ], AppComponent);
-                return AppComponent;
+                ], PassangersComponent);
+                return PassangersComponent;
             }());
-            exports_1("AppComponent", AppComponent);
+            exports_1("PassangersComponent", PassangersComponent);
         }
     }
 });
 
-//# sourceMappingURL=app.component.js.map
+//# sourceMappingURL=passangers.component.js.map
