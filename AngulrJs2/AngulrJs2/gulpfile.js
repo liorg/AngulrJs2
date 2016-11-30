@@ -8,8 +8,29 @@ var gulpTypings = require("gulp-typings");
 var sourcemaps = require('gulp-sourcemaps');
 var cacheBuster = require('gulp-cache-bust');
 var SystemJSCacheBuster = require("systemjs-cachebuster");
-
 var cacheSysBuster = new SystemJSCacheBuster();
+var uglify = require('gulp-uglify');
+var lazypipe = require('lazypipe');
+var gulpif = require('gulp-if')
+var cssnano = require('gulp-cssnano');
+var uglifycss = require('gulp-uglifycss');
+
+
+gulp.task("min:css", function () {
+    gulp.src('dist/App/**/*.css')
+    .pipe(uglifycss({
+        "maxLineLen": 80,
+        "uglyComments": true
+    }))
+    .pipe(gulp.dest('dist/App/**/*.css'));
+});
+
+gulp.task("min:js", function () {
+    return gulp.src('dist/App/**/*.js')
+        .pipe(uglify())
+        .pipe(gulp.dest("."));
+});
+
 
 gulp.task("installTypings", function () {
     var stream = gulp.src("./typings.json")
@@ -17,21 +38,17 @@ gulp.task("installTypings", function () {
     return stream; // by returning stream gulp can listen to events from the stream and knows when it is finished. 
 });
 
-gulp.task('cacheBuster', [], function () {
+gulp.task('rev:cacheBuster', ['rev:cacheSysBuster'], function () {
     return gulp.src('./index.html')
         .pipe(cacheBuster())
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('cacheSysBuster', function () {
+gulp.task('rev:cacheSysBuster', function () {
     return gulp
         .src('dist/App/**/*.js')
         .pipe(cacheSysBuster.full())
         .pipe(cacheSysBuster.incremental());
-});
-
-gulp.task('removeCache', ['cacheSysBuster', 'cacheBuster'], function () {
-
 });
 
 // clean the contents of the distribution directory
@@ -50,6 +67,11 @@ gulp.task('copy:css', function () {
         'node_modules/bootstrap/fonts'
     ])
       .pipe(gulp.dest('dist/lib/css'))
+});
+
+gulp.task('copy:cssComponents', function () {
+    return gulp.src('App/**/*.css')
+      .pipe(gulp.dest('dist/App/'))
 });
 
 gulp.task('copy:libs', function () {
@@ -92,8 +114,8 @@ gulp.task('copy:rxjs', function () {
     ])
       .pipe(gulp.dest('dist/lib/rxjs'))
 });
-// TypeScript compile
 
+// TypeScript compile
 gulp.task('compile', ['clean', 'copy:rxjs', 'copy:libs', 'copy:assets', 'copy:css'], function () {
     return gulp
       .src('app/**/*.ts')
@@ -103,6 +125,6 @@ gulp.task('compile', ['clean', 'copy:rxjs', 'copy:libs', 'copy:assets', 'copy:cs
       .pipe(gulp.dest('dist/app'));
 });
 
-gulp.task('build', ['compile']);
+gulp.task('build', ['compile', 'copy:cssComponents']);
 
 gulp.task('default', ['build']);

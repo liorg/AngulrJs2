@@ -38,7 +38,14 @@
     "browser-sync": "^2.10.0",
     "gulp-tslint": "^7.0.1",
     "tsd": "^0.6.5",
-    "tsconfig-glob": "^0.4.3"
+    "tsconfig-glob": "^0.4.3",
+      "gulp-uglify": "^2.0.0",
+    "gulp-cssnano": "^2.1.2",
+    "lazypipe": "^1.0.1",
+    "gulp-if": "^2.0.2",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-useref": "^3.1.2",
+       "gulp-uglifycss": "^1.0.6"
 
   }
 }
