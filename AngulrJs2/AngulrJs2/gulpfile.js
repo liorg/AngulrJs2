@@ -15,6 +15,11 @@ var gulpif = require('gulp-if')
 var cssnano = require('gulp-cssnano');
 var uglifycss = require('gulp-uglifycss');
 
+gulp.task('watch', function () {
+    gulp.watch('App/**/*.*', ['build:build-lite', 'rev:cacheBuster']);
+});
+
+
 
 gulp.task("min:css", function () {
     gulp.src('dist/App/**/*.css')
@@ -28,9 +33,9 @@ gulp.task("min:css", function () {
 gulp.task("min:js", function () {
     return gulp.src('dist/App/**/*.js')
         .pipe(uglify())
-        .pipe(gulp.dest("."));
-});
+        .pipe(gulp.dest("dist/App/**/."))
 
+});
 
 gulp.task("installTypings", function () {
     var stream = gulp.src("./typings.json")
@@ -123,8 +128,33 @@ gulp.task('compile', ['clean', 'copy:rxjs', 'copy:libs', 'copy:assets', 'copy:cs
       .pipe(typescript(tscConfig.compilerOptions))
       .pipe(sourcemaps.write('.'))      // <--- sourcemaps
       .pipe(gulp.dest('dist/app'));
+
 });
 
-gulp.task('build', ['compile', 'copy:cssComponents']);
+gulp.task('compile-lite', [], function () {
+    return gulp
+      .src('app/**/*.ts')
+      .pipe(sourcemaps.init())          // <--- sourcemaps
+      .pipe(typescript(tscConfig.compilerOptions))
+      .pipe(sourcemaps.write('.'))      // <--- sourcemaps
+      .pipe(gulp.dest('dist/app'));
+});
 
-gulp.task('default', ['build']);
+gulp.task('watch-signalr', function () {
+    gulp.watch('AppSignalR/**/*.*', ['build:compile-signalr']);
+});
+gulp.task('build:compile-signalr', [], function () {
+    return gulp
+      .src('AppSignalR/**/*.ts')
+      .pipe(sourcemaps.init())          // <--- sourcemaps
+      .pipe(typescript(tscConfig.compilerOptions))
+      .pipe(sourcemaps.write('.'))      // <--- sourcemaps
+      .pipe(gulp.dest('dist/AppSignalR'));
+});
+
+
+gulp.task('build:build-lite', ['compile-lite', 'copy:cssComponents']);
+
+gulp.task('build:buildAll', ['compile', 'copy:cssComponents']);
+
+gulp.task('default', ['build:buildAll']);

@@ -15,7 +15,7 @@ export class ProductService {
 
     getProducts(): Observable<any[]> {
         return this._http.get(this._productUrl)
-            .map((response: Response) => <any[]>response.json())
+            .map((response: Response) =><any[]>response.json())
             .do(data => console.log('All: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }

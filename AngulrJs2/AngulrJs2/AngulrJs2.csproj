@@ -92,6 +92,7 @@
   <ItemGroup>
     <Content Include="Angular\StyleSheet1.css" />
     <Content Include="App\app.component.css" />
+    <Content Include="App\FlightPostponed\passangers.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.html" />
     <Content Include="App\home\welcome.component.html" />
     <Content Include="App\products\products.component.html" />
@@ -469,6 +470,7 @@
     <Content Include="dist\lib\rxjs\util\toSubscriber.js" />
     <Content Include="dist\lib\rxjs\util\tryCatch.js" />
     <Content Include="dist\lib\rxjs\util\UnsubscriptionError.js" />
+    <Content Include="event.html" />
     <Content Include="gulpfile.old.js" />
     <Content Include="gulpfile.js" />
     <Content Include="Index.html" />
@@ -480,9 +482,13 @@
     <Content Include="Scripts\jquery.signalR-2.2.1.min.js" />
     <Content Include="seats.html" />
     <Content Include="systemjs.config.js" />
+    <Content Include="systemjs.signalR.config.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CrmController.cs" />
+    <Compile Include="Controllers\EventHub.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PlaneHub.cs" />
     <Compile Include="Models\PlaneSeatsArrangement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -523,6 +529,7 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AppSignalR\" />
     <Folder Include="App\shared\" />
     <Folder Include="dist\app\" />
     <Folder Include="dist\lib\css\fonts\" />

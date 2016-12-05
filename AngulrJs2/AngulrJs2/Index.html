@@ -11,15 +11,19 @@
     <script src="/dist/lib/assets/zone.js?v=2575fecf7567a972015eec4e042ee364"></script>
     <script src="/dist/lib/assets/Reflect.js?v=3e2f12c50659230feac24c06ecfa9f50"></script>
     <script src="/dist/lib/assets/system.src.js?v=1428ca8fecfb2a03db59747635dbde97"></script>
+    <script src="dist/lib/assets/system.cachebuster.js?v=308d28dbd739976f1e57c3c44c31778a"></script>
     <link href="/App/app.component.css?v=6ab302b04352ff0cabfe717e703e25f2" rel="stylesheet" />
     <!-- Configure SystemJS -->
-    <script src="systemjs.config.js?v=42f36deffe65dff4fb4a32356006ea4d"></script>
+    <script src="systemjs.config.js?v=58371f0fed9e91c877a1b4d9d6a4d9da"></script>
     <script>
+        SystemCacheBuster.config({
+            enableLogs: true
+        });
       System.import('app').catch(function(err){ console.error(err); });
     </script>
 </head>
-<body>
-    <pm-app>loading...</pm-app>
+<body>old view<br />
+    <pm-app>loading...</pm-app> 
     
 </body>
 </html>
