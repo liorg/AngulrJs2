@@ -20,12 +20,13 @@ System.register(['@angular/core'], function(exports_1, context_1) {
         execute: function() {
             PassangersComponent = (function () {
                 function PassangersComponent() {
-                    this.PassangersTitle = 'Passangers List';
+                    this.PassangersTitle = 'aa !!!';
                 }
                 PassangersComponent = __decorate([
                     core_1.Component({
                         selector: 'pm-passangers',
-                        templateUrl: 'app/FlightPostponed/passangers.component.html'
+                        templateUrl: 'app/FlightPostponed/passangers.component.html',
+                        styleUrls: ['app/FlightPostponed/passangers.component.css']
                     }), 
                     __metadata('design:paramtypes', [])
                 ], PassangersComponent);
