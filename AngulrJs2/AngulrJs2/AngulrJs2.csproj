@@ -160,14 +160,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Angular\StyleSheet1.css" />
-    <Content Include="app2\home\welcome.component.html" />
-    <Content Include="AppPack\app.component.css" />
-    <Content Include="AppPack\FlightPostponed\passangers.component.css" />
-    <Content Include="AppPack\FlightPostponed\passangers.component.html" />
-    <Content Include="AppPack\home\welcome.component.html" />
-    <Content Include="AppPack\Index.html" />
-    <Content Include="AppPack\products\products.component.html" />
-    <Content Include="app2\products\products.component.html" />
+    <Content Include="appToProd\FlightPostponed\passangers.component.css" />
+    <Content Include="appToProd\FlightPostponed\passangers.component.html" />
+    <Content Include="appToProd\home\welcome.component.html" />
+    <Content Include="appToProd\products\products.component.html" />
     <Content Include="App\app.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.html" />
@@ -568,10 +564,14 @@
     <Content Include="Index.systemjs.html" />
     <Content Include="Index.html" />
     <Content Include="Index.webpack.html" />
+    <Content Include="appToProd\app.component.css" />
+    <Content Include="appToProd\app.component.html" />
+    <Content Include="appToProd\index.html" />
+    <Content Include="public\css\bootstrap-theme.css" />
+    <Content Include="public\css\bootstrap-theme.min.css" />
+    <Content Include="public\css\bootstrap.css" />
+    <Content Include="public\css\bootstrap.min.css" />
     <Content Include="public\css\Styles.css" />
-    <Content Include="app2\app.component.css" />
-    <Content Include="app2\app.component.html" />
-    <Content Include="app2\index.html" />
     <Content Include="public\images\angular.png" />
     <Content Include="public\images\available_seat_img.gif" />
     <Content Include="public\images\booked_seat_img.gif" />
@@ -622,19 +622,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app2\home\welcome.component.ts" />
-    <TypeScriptCompile Include="AppPack\app.component.ts" />
-    <TypeScriptCompile Include="AppPack\app.module.ts" />
-    <TypeScriptCompile Include="AppPack\FlightPostponed\passangers.component.ts" />
-    <TypeScriptCompile Include="AppPack\home\welcome.component.ts" />
-    <TypeScriptCompile Include="AppPack\main.ts" />
-    <TypeScriptCompile Include="AppPack\polyfills.ts" />
-    <TypeScriptCompile Include="AppPack\products\Product.service.ts" />
-    <TypeScriptCompile Include="AppPack\products\products.component.ts" />
-    <TypeScriptCompile Include="AppPack\vendor.ts" />
-    <TypeScriptCompile Include="app2\app.component.spec.ts" />
-    <TypeScriptCompile Include="app2\products\Product.service.ts" />
-    <TypeScriptCompile Include="app2\products\products.component.ts" />
+    <TypeScriptCompile Include="appToProd\FlightPostponed\passangers.component.ts" />
+    <TypeScriptCompile Include="appToProd\home\welcome.component.ts" />
+    <TypeScriptCompile Include="appToProd\app.component.spec.ts" />
+    <TypeScriptCompile Include="appToProd\products\Product.service.ts" />
+    <TypeScriptCompile Include="appToProd\products\products.component.ts" />
     <TypeScriptCompile Include="App\app.component.ts" />
     <TypeScriptCompile Include="App\app.module.ts" />
     <TypeScriptCompile Include="App\FlightPostponed\passangers.component.ts" />
@@ -645,11 +637,11 @@
     <TypeScriptCompile Include="App\products\products.component.ts" />
     <Content Include="src\app\app.component.html" />
     <TypeScriptCompile Include="App\vendor.ts" />
-    <TypeScriptCompile Include="app2\app.component.ts" />
-    <TypeScriptCompile Include="app2\app.module.ts" />
-    <TypeScriptCompile Include="app2\main.ts" />
-    <TypeScriptCompile Include="app2\polyfills.ts" />
-    <TypeScriptCompile Include="app2\vendor.ts" />
+    <TypeScriptCompile Include="appToProd\app.component.ts" />
+    <TypeScriptCompile Include="appToProd\app.module.ts" />
+    <TypeScriptCompile Include="appToProd\main.ts" />
+    <TypeScriptCompile Include="appToProd\polyfills.ts" />
+    <TypeScriptCompile Include="appToProd\vendor.ts" />
     <TypeScriptCompile Include="src\app\app.component.spec.ts" />
     <TypeScriptCompile Include="src\app\app.component.ts" />
     <TypeScriptCompile Include="src\app\app.module.ts" />

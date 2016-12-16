@@ -13,7 +13,7 @@ import { ProductService } from './products/product.service';
     imports: [BrowserModule, HttpModule, RouterModule.forRoot([
         { path: 'welcome', component: WelcomeComponent },
         { path: 'products', component: ProductsComponent },
-        { path: 'passangers', component: PassangersComponent },
+      //  { path: 'passangers', component: PassangersComponent },
         { path: '', redirectTo: 'welcome', pathMatch: 'full' },
         { path: '**', redirectTo: 'welcome', pathMatch: 'full' }
     ])],
