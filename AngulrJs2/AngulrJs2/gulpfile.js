@@ -2,7 +2,8 @@
 var gulp = require('gulp');
 var del = require('del');
 var typescript = require('gulp-typescript');
-var tscConfig = require('./tsconfig.json');
+//var tscConfig = require('./tsconfig.json');
+var tscConfig = require('./tsconfigSysemJS.json');
 var tslint = require('gulp-tslint');
 var gulpTypings = require("gulp-typings");
 var sourcemaps = require('gulp-sourcemaps');
@@ -14,6 +15,18 @@ var lazypipe = require('lazypipe');
 var gulpif = require('gulp-if')
 var cssnano = require('gulp-cssnano');
 var uglifycss = require('gulp-uglifycss');
+
+var webpack = require('gulp-webpack');
+var webpackConfig = require('./config/webpack.test.js');
+
+// TypeScript
+gulp.task('ts', function () {
+    // TypeScript
+    var tsResult = gulp.src(['./src/*.ts'])
+        .pipe(webpack(webpackConfig))
+        .pipe(gulp.dest('./'));
+});
+
 
 gulp.task('watch', function () {
     gulp.watch('App/**/*.*', ['build:build-lite', 'rev:cacheBuster']);

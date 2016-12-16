@@ -166,6 +166,13 @@
     <Content Include="App\home\welcome.component.html" />
     <Content Include="App\products\products.component.html" />
     <Content Include="Comp\Tester.html" />
+    <Content Include="config\helpers.js" />
+    <Content Include="config\karma-test-shim.js" />
+    <Content Include="config\karma.conf.js" />
+    <Content Include="config\webpack.common.js" />
+    <Content Include="config\webpack.dev.js" />
+    <Content Include="config\webpack.prod.js" />
+    <Content Include="config\webpack.test.js" />
     <Content Include="dist\lib\%40angular\common.umd.js" />
     <Content Include="dist\lib\%40angular\compiler.umd.js" />
     <Content Include="dist\lib\%40angular\core.umd.js" />
@@ -542,9 +549,17 @@
     <Content Include="event.html" />
     <Content Include="gulpfile.old.js" />
     <Content Include="gulpfile.js" />
+    <Content Include="Index.systemjs.html" />
     <Content Include="Index.html" />
+    <Content Include="Index.webpack.html" />
+    <Content Include="public\css\Styles.css" />
+    <Content Include="src\app\app.component.css" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config" />
+    <Content Include="src\index.html" />
+    <Content Include="webpack.config.js" />
+    <Content Include="karma.conf" />
+    <Content Include="AppSignalR.zip" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -570,6 +585,7 @@
     <Content Include="typings\globals\core-js\typings.json" />
     <Content Include="typings\globals\node\typings.json" />
     <Content Include="tsconfig.json" />
+    <Content Include="tsconfigSysemJS.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -585,6 +601,13 @@
     <TypeScriptCompile Include="App\main.ts" />
     <TypeScriptCompile Include="App\products\Product.service.ts" />
     <TypeScriptCompile Include="App\products\products.component.ts" />
+    <Content Include="src\app\app.component.html" />
+    <TypeScriptCompile Include="src\app\app.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\app.component.ts" />
+    <TypeScriptCompile Include="src\app\app.module.ts" />
+    <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\pollyfills.ts" />
+    <TypeScriptCompile Include="src\vendor.ts" />
     <TypeScriptCompile Include="ts\Account\Account.ts" />
     <TypeScriptCompile Include="ts\Account\Logger.ts" />
     <TypeScriptCompile Include="ts\Account\Stam.ts" />
@@ -599,12 +622,12 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AppSignalR\" />
     <Folder Include="App\shared\" />
     <Folder Include="dist\app\" />
     <Folder Include="dist\lib\css\fonts\" />
     <Folder Include="images\" />
     <Folder Include="js\Account\" />
+    <Folder Include="public\images\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

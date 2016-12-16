@@ -2,10 +2,10 @@
   "compilerOptions": {
     "outDir": "build/app",
     "target": "es5",
-    "module": "system",
+    "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-      "disableCompileOnSave": true,
+    
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "removeComments": false,
