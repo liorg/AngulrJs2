@@ -5,6 +5,6 @@
     styleUrls: ['app/FlightPostponed/passangers.component.css']
 })
 export class PassangersComponent  {
-    debugger;
+   // debugger;
     PassangersTitle: string = 'aa !!!';
 }

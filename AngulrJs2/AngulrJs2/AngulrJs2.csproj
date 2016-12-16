@@ -160,12 +160,28 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Angular\StyleSheet1.css" />
+    <Content Include="app2\home\welcome.component.html" />
+    <Content Include="AppPack\app.component.css" />
+    <Content Include="AppPack\FlightPostponed\passangers.component.css" />
+    <Content Include="AppPack\FlightPostponed\passangers.component.html" />
+    <Content Include="AppPack\home\welcome.component.html" />
+    <Content Include="AppPack\Index.html" />
+    <Content Include="AppPack\products\products.component.html" />
+    <Content Include="app2\products\products.component.html" />
     <Content Include="App\app.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.html" />
     <Content Include="App\home\welcome.component.html" />
+    <Content Include="App\Index.html" />
     <Content Include="App\products\products.component.html" />
     <Content Include="Comp\Tester.html" />
+    <Content Include="configExample\helpers.js" />
+    <Content Include="configExample\karma-test-shim.js" />
+    <Content Include="configExample\karma.conf.js" />
+    <Content Include="configExample\webpack.common.js" />
+    <Content Include="configExample\webpack.dev.js" />
+    <Content Include="configExample\webpack.prod.js" />
+    <Content Include="configExample\webpack.test.js" />
     <Content Include="config\helpers.js" />
     <Content Include="config\karma-test-shim.js" />
     <Content Include="config\karma.conf.js" />
@@ -553,6 +569,18 @@
     <Content Include="Index.html" />
     <Content Include="Index.webpack.html" />
     <Content Include="public\css\Styles.css" />
+    <Content Include="app2\app.component.css" />
+    <Content Include="app2\app.component.html" />
+    <Content Include="app2\index.html" />
+    <Content Include="public\images\angular.png" />
+    <Content Include="public\images\available_seat_img.gif" />
+    <Content Include="public\images\booked_seat_img.gif" />
+    <Content Include="public\images\businessman.png" />
+    <Content Include="public\images\calendar.svg" />
+    <Content Include="public\images\EL_AL_New_Logo.svg" />
+    <Content Include="public\images\main-bg-2x.jpg" />
+    <Content Include="public\images\main-bg.jpg" />
+    <Content Include="public\images\selected_seat_img.gif" />
     <Content Include="src\app\app.component.css" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config" />
@@ -594,19 +622,39 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="app2\home\welcome.component.ts" />
+    <TypeScriptCompile Include="AppPack\app.component.ts" />
+    <TypeScriptCompile Include="AppPack\app.module.ts" />
+    <TypeScriptCompile Include="AppPack\FlightPostponed\passangers.component.ts" />
+    <TypeScriptCompile Include="AppPack\home\welcome.component.ts" />
+    <TypeScriptCompile Include="AppPack\main.ts" />
+    <TypeScriptCompile Include="AppPack\polyfills.ts" />
+    <TypeScriptCompile Include="AppPack\products\Product.service.ts" />
+    <TypeScriptCompile Include="AppPack\products\products.component.ts" />
+    <TypeScriptCompile Include="AppPack\vendor.ts" />
+    <TypeScriptCompile Include="app2\app.component.spec.ts" />
+    <TypeScriptCompile Include="app2\products\Product.service.ts" />
+    <TypeScriptCompile Include="app2\products\products.component.ts" />
     <TypeScriptCompile Include="App\app.component.ts" />
     <TypeScriptCompile Include="App\app.module.ts" />
     <TypeScriptCompile Include="App\FlightPostponed\passangers.component.ts" />
     <TypeScriptCompile Include="App\home\welcome.component.ts" />
     <TypeScriptCompile Include="App\main.ts" />
+    <TypeScriptCompile Include="App\polyfills.ts" />
     <TypeScriptCompile Include="App\products\Product.service.ts" />
     <TypeScriptCompile Include="App\products\products.component.ts" />
     <Content Include="src\app\app.component.html" />
+    <TypeScriptCompile Include="App\vendor.ts" />
+    <TypeScriptCompile Include="app2\app.component.ts" />
+    <TypeScriptCompile Include="app2\app.module.ts" />
+    <TypeScriptCompile Include="app2\main.ts" />
+    <TypeScriptCompile Include="app2\polyfills.ts" />
+    <TypeScriptCompile Include="app2\vendor.ts" />
     <TypeScriptCompile Include="src\app\app.component.spec.ts" />
     <TypeScriptCompile Include="src\app\app.component.ts" />
     <TypeScriptCompile Include="src\app\app.module.ts" />
     <TypeScriptCompile Include="src\main.ts" />
-    <TypeScriptCompile Include="src\pollyfills.ts" />
+    <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\vendor.ts" />
     <TypeScriptCompile Include="ts\Account\Account.ts" />
     <TypeScriptCompile Include="ts\Account\Logger.ts" />
@@ -622,12 +670,10 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App\shared\" />
     <Folder Include="dist\app\" />
     <Folder Include="dist\lib\css\fonts\" />
     <Folder Include="images\" />
     <Folder Include="js\Account\" />
-    <Folder Include="public\images\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

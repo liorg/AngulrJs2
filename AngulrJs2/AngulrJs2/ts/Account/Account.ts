@@ -5,7 +5,7 @@ import {Logger} from "./Logger";
 namespace Malam.Weizman {
     export  class Account {
         static onLoad(): void {
-            debugger;
+        
             Logger.writeLog("hi");
             //alert('=1=');
             //Xrmwebapi.WebApi.retrieve("accounts", Xrm.Page.data.entity.getId().replace("{", "").replace("}", ""), "$select=name")
@@ -23,6 +23,6 @@ namespace Malam.Weizman {
     }
 
 }
-debugger;
+
 Malam.Weizman.Account.onLoad();
 

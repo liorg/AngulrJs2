@@ -5,7 +5,8 @@
   "description": "",
   "scripts": {
     "tslint": "tslint -c tslint.json app/**/*.ts",
-    "postinstall": "typings install"
+    "postinstall": "typings install",
+    "build": "rimraf dist && webpack --config config/webpack.prod.js --progress --profile --bail"
   },
   "dependencies": {
     "@angular/common": "2.0.0",
@@ -50,21 +51,18 @@
     "gulp-webpack": "^1.5.0",
     "webpack-merge": "^1.1.1",
     "extract-text-webpack-plugin": "^1.0.1",
-  
     "angular2-template-loader": "^0.4.0",
-      "awesome-typescript-loader": "3.0.0-beta.9",
+    "awesome-typescript-loader": "3.0.0-beta.9",
     "css-loader": "^0.23.1",
-      "file-loader": "^0.8.5",
+    "file-loader": "^0.8.5",
     "html-loader": "^0.4.3",
     "html-webpack-plugin": "^2.15.0",
     "jasmine-core": "^2.4.1",
-   
     "null-loader": "^0.1.1",
     "phantomjs-prebuilt": "^2.1.7",
     "raw-loader": "^0.5.1",
-    "rimraf": "^2.5.2",
+    "rimraf":"^2.5.4",
     "style-loader": "^0.13.1",
-
     "ts-loader": "^1.3.3",
     "webpack-dev-server": "^1.16.2",
     "run-sequence": "^1.2.2",

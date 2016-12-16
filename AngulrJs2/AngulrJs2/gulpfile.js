@@ -17,13 +17,14 @@ var cssnano = require('gulp-cssnano');
 var uglifycss = require('gulp-uglifycss');
 
 var webpack = require('gulp-webpack');
-var webpackConfig = require('./config/webpack.test.js');
+//var webpackConfig = require('./config/webpack.test.js');
+var webpackProdConfig = require('./webpack.config.js');
 
 // TypeScript
-gulp.task('ts', function () {
+gulp.task('webpack:ts', function () {
     // TypeScript
     var tsResult = gulp.src(['./src/*.ts'])
-        .pipe(webpack(webpackConfig))
+        .pipe(webpack(webpackProdConfig))
         .pipe(gulp.dest('./'));
 });
 
