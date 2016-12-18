@@ -41,7 +41,7 @@ namespace AngulrJs2.Controllers
             result.Model = new Profile
             {
                 UserId = Guid.NewGuid().ToString(),
-                FullName = "TODO TODO",
+                FullName = username,
                 LoginDateYear = DateTime.Now.Year.ToString(),
                 LoginDateMonth = DateTime.Now.Month.ToString(),
                 LoginDateHour = DateTime.Now.ToShortTimeString(),

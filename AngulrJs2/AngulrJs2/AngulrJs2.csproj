@@ -199,7 +199,17 @@
     <Content Include="appToProd\FlightPostponed\passangers.component.css" />
     <Content Include="appToProd\FlightPostponed\passangers.component.html" />
     <Content Include="appToProd\home\welcome.component.html" />
+    <Content Include="appToProd\Profile\Profile.component.html" />
     <Content Include="appToProd\products\products.component.html" />
+    <TypeScriptCompile Include="AppSignalR\app.component.ts" />
+    <TypeScriptCompile Include="AppSignalR\app.module.ts" />
+    <TypeScriptCompile Include="AppSignalR\main.ts" />
+    <TypeScriptCompile Include="AppSignalR\services\channel.service.ts" />
+    <TypeScriptCompile Include="AppSignalR\task.component.ts" />
+    <TypeScriptCompile Include="appToProd\Profile\ProfileDetail.Model.ts" />
+    <TypeScriptCompile Include="appToProd\Profile\Result.Model.ts" />
+    <TypeScriptCompile Include="appToProd\Profile\XProfile.Service.ts" />
+    <TypeScriptCompile Include="appToProd\Profile\Profile.component.ts" />
     <Content Include="App\app.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.html" />
@@ -624,7 +634,6 @@
     <Content Include="src\index.html" />
     <Content Include="webpack.config.js" />
     <Content Include="karma.conf" />
-    <Content Include="AppSignalR.zip" />
     <Content Include="Demo\products\products.json" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
