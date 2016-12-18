@@ -9,7 +9,8 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ProductService {
-    private _productUrl = 'Demo/products/products.json';
+    //private _productUrl = 'Demo/products/products.json';
+    private _productUrl = 'Api/Crm/GetProducts';
 
     constructor(private _http: Http) { }
 
