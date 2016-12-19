@@ -211,11 +211,13 @@
     <TypeScriptCompile Include="appToProd\Profile\XProfile.Service.ts" />
     <TypeScriptCompile Include="appToProd\Profile\Profile.component.ts" />
     <Content Include="App\app.component.css" />
+    <Content Include="App\app.component.html" />
     <Content Include="App\FlightPostponed\passangers.component.css" />
     <Content Include="App\FlightPostponed\passangers.component.html" />
     <Content Include="App\home\welcome.component.html" />
     <Content Include="App\Index.html" />
     <Content Include="App\products\products.component.html" />
+    <Content Include="App\Profile\Profile.component.html" />
     <Content Include="Comp\Tester.html" />
     <Content Include="configExample\helpers.js" />
     <Content Include="configExample\karma-test-shim.js" />
@@ -225,6 +227,7 @@
     <Content Include="configExample\webpack.prod.js" />
     <Content Include="configExample\webpack.test.js" />
     <Content Include="config\helpers.js" />
+    <None Include="config\gulpEnvConfig.json" />
     <Content Include="config\karma-test-shim.js" />
     <Content Include="config\karma.conf.js" />
     <Content Include="config\webpack.common.js" />
@@ -671,6 +674,7 @@
     <Content Include="typings\globals\node\typings.json" />
     <Content Include="tsconfig.json" />
     <Content Include="tsconfigSysemJS.json" />
+    <Content Include="tsconfigSysemJS - Copy.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -684,6 +688,7 @@
     <TypeScriptCompile Include="appToProd\app.component.spec.ts" />
     <TypeScriptCompile Include="appToProd\products\Product.service.ts" />
     <TypeScriptCompile Include="appToProd\products\products.component.ts" />
+    <TypeScriptCompile Include="App\app.component.spec.ts" />
     <TypeScriptCompile Include="App\app.component.ts" />
     <TypeScriptCompile Include="App\app.module.ts" />
     <TypeScriptCompile Include="App\FlightPostponed\passangers.component.ts" />
@@ -693,6 +698,10 @@
     <TypeScriptCompile Include="App\products\Product.service.ts" />
     <TypeScriptCompile Include="App\products\products.component.ts" />
     <Content Include="src\app\app.component.html" />
+    <TypeScriptCompile Include="App\Profile\Profile.component.ts" />
+    <TypeScriptCompile Include="App\Profile\ProfileDetail.Model.ts" />
+    <TypeScriptCompile Include="App\Profile\Result.Model.ts" />
+    <TypeScriptCompile Include="App\Profile\XProfile.Service.ts" />
     <TypeScriptCompile Include="App\vendor.ts" />
     <TypeScriptCompile Include="appToProd\app.component.ts" />
     <TypeScriptCompile Include="appToProd\app.module.ts" />

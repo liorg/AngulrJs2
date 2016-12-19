@@ -1,9 +1,7 @@
-﻿.stam
-{
-    background-color:red;
-}
-.xx{
-    background-color:yellow;
-    vertical-align:auto;
-    background-repeat:inherit;
+﻿.stam {
+  padding: 1em;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin-top: 50px;
+  display: block;
 }
