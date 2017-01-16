@@ -674,7 +674,7 @@
     <Content Include="typings\globals\node\typings.json" />
     <Content Include="tsconfig.json" />
     <Content Include="tsconfigSysemJS.json" />
-    <Content Include="tsconfigSysemJS - Copy.json" />
+    <Content Include="system.cachebuster.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -691,9 +691,11 @@
     <TypeScriptCompile Include="App\app.component.spec.ts" />
     <TypeScriptCompile Include="App\app.component.ts" />
     <TypeScriptCompile Include="App\app.module.ts" />
+    <TypeScriptCompile Include="App\channel.service.ts" />
     <TypeScriptCompile Include="App\FlightPostponed\passangers.component.ts" />
     <TypeScriptCompile Include="App\home\welcome.component.ts" />
     <TypeScriptCompile Include="App\main.ts" />
+    <TypeScriptCompile Include="App\PassengersBackendService.service.ts" />
     <TypeScriptCompile Include="App\polyfills.ts" />
     <TypeScriptCompile Include="App\products\Product.service.ts" />
     <TypeScriptCompile Include="App\products\products.component.ts" />

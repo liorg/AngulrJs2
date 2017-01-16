@@ -1,0 +1,1 @@
+{"version":3,"sources":["Profile/Result.Model.ts"],"names":[],"mappings":";;;;;;;YACA;gBAAA;gBAIA,CAAC;gBAAD,aAAC;YAAD,CAJA,AAIC,IAAA;YAJD,2BAIC,CAAA","file":"Result.Model.js","sourcesContent":["\r\nexport class Result<T> {\r\n    isErr: boolean;\r\n    desc: string;\r\n    model: T;\r\n}"]}

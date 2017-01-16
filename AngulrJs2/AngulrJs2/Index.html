@@ -1,1 +1,31 @@
-<!DOCTYPE html> <html> <head> <base href=/ > <title>Angular With Webpack</title> <meta charset=UTF-8> <meta name=viewport content="width=device-width,initial-scale=1"> <link href=../public/css/bootstrap.min.css rel=stylesheet /> <link href="../App/app.component.css?v=6ab302b04352ff0cabfe717e703e25f2" rel=stylesheet /> </head> <body>test <pm-app>Loading...</pm-app> <script type="text/javascript" src="/polyfills.78e84af79391fae0a948.js"></script><script type="text/javascript" src="/vendor.78e84af79391fae0a948.js"></script><script type="text/javascript" src="/app.78e84af79391fae0a948.js"></script></body> </html> 
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <base href="/">
+    <title>Acme Product Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- Polyfill(s) for older browsers -->
+    <script src="/dist/lib/assets/shim.min.js?v=59f76c30431a3dbd1f0d08e31ca953e7"></script>
+    <link href="dist/lib/css/css/bootstrap.min.css?v=ec3bb52a00e176a7181d454dffaea219" rel="stylesheet" />
+    <script src="/dist/lib/assets/zone.js?v=2575fecf7567a972015eec4e042ee364"></script>
+    <script src="/dist/lib/assets/Reflect.js?v=3e2f12c50659230feac24c06ecfa9f50"></script>
+    <script src="/dist/lib/assets/system.src.js?v=1428ca8fecfb2a03db59747635dbde97"></script>
+    <script src="dist/lib/assets/system.cachebuster.js?v=308d28dbd739976f1e57c3c44c31778a"></script>
+    <link href="/App/app.component.css?v=6ab302b04352ff0cabfe717e703e25f2" rel="stylesheet" />
+    <!-- Configure SystemJS -->
+    <script src="systemjs.config.js?v=58371f0fed9e91c877a1b4d9d6a4d9da"></script>
+    <script>
+        SystemCacheBuster.config({
+            enableLogs: true
+        });
+      System.import('app').catch(function(err){ console.error(err); });
+    </script>
+</head>
+<body>
+    old view<br />
+    <pm-app>loading...</pm-app>
+
+</body>
+</html>
