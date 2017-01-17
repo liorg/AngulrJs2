@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AngulrJs2.ViewModel
+namespace Elal.FlightPostponed.ViewModel
 {
     [JsonObject("profile")]
     public class Profile
@@ -33,7 +33,7 @@ namespace AngulrJs2.ViewModel
         public string LoginDateNum { get; set; }
 
         [JsonProperty("loginDateMonth")]
-        public string LoginDateMonth { get; set; }
+        public string LoginDateMonth{ get; set; }
 
     }
 }

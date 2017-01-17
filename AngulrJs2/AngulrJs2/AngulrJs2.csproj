@@ -663,10 +663,17 @@
     </Compile>
     <Compile Include="Models\PlaneSeatsArrangement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="signalr\LockHub.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModel\FlightView.cs" />
+    <Compile Include="ViewModel\HotelsViewModel.cs" />
+    <Compile Include="ViewModel\OrderFlightPostponedRequest.cs" />
+    <Compile Include="ViewModel\PassengerDetailView.cs" />
+    <Compile Include="ViewModel\PassengerView.cs" />
     <Compile Include="ViewModel\Product.cs" />
     <Compile Include="ViewModel\Profile.cs" />
     <Compile Include="ViewModel\Result.cs" />
+    <Compile Include="ViewModel\SessionStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="package.json" />
