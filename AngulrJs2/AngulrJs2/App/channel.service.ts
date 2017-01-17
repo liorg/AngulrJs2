@@ -34,14 +34,13 @@ export class passangerLocked {
 
 export class userHandle {
     userid: string;
-    firstName: string;
-    lastName: string;
-    title: string;
+    name: string;
     passangers: passangerLocked[];
 }
 
 export class SessionStatus {
     state: number;
+    trackid: string;
     timestamp: Date;
     users: userHandle[];
 }

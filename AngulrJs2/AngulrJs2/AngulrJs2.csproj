@@ -216,6 +216,9 @@
     <Content Include="App\FlightPostponed\passangers.component.html" />
     <Content Include="App\home\welcome.component.html" />
     <Content Include="App\Index.html" />
+    <Content Include="App\Passangers\passangers.component.css" />
+    <Content Include="App\Passangers\passangers.component.html" />
+    <Content Include="App\Passangers\passangersr.component.html" />
     <Content Include="App\products\products.component.html" />
     <Content Include="App\profile.component.html" />
     <Content Include="App\Profile\Profile.component.html" />
@@ -703,6 +706,14 @@
     <TypeScriptCompile Include="App\FlightPostponed\passangers.component.ts" />
     <TypeScriptCompile Include="App\home\welcome.component.ts" />
     <TypeScriptCompile Include="App\main.ts" />
+    <TypeScriptCompile Include="App\Passangers\CustomerSelectedFilter.pipe.ts" />
+    <TypeScriptCompile Include="App\Passangers\FlightDetail.Model.ts" />
+    <TypeScriptCompile Include="App\Passangers\orderFlightPostponedRequest.Model.ts" />
+    <TypeScriptCompile Include="App\Passangers\passanger.Model.ts" />
+    <TypeScriptCompile Include="App\Passangers\passanger.service.ts" />
+    <TypeScriptCompile Include="App\Passangers\PassangerFilter.Model.ts" />
+    <TypeScriptCompile Include="App\Passangers\passangers.component.ts" />
+    <TypeScriptCompile Include="App\Passangers\passangersr.component.ts" />
     <TypeScriptCompile Include="App\PassengersBackendService.service.ts" />
     <TypeScriptCompile Include="App\polyfills.ts" />
     <TypeScriptCompile Include="App\products\Product.service.ts" />

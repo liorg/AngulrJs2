@@ -1,0 +1,36 @@
+﻿/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/* BUTTONS
+/*----------------------------------------------------------------------------*/
+
+ h1.fixed {
+  position: fixed;
+  top: 86px;
+  background: #e7eaeb;
+  left: 0;
+  right: 0;
+  z-index: 95;
+  padding-left: 30px;
+  padding-right: 20px;
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  -webkit-transition: right 0.5s;
+  -moz-transition: right 0.5s;
+  -ms-transition: right 0.5s;
+  -o-transition: right 0.5s;
+  transition: right 0.5s;
+}
+ h1.fixed + * {
+  margin-top: 80px;
+}
+ h1.fixed a#search {
+  min-width: 71px;
+  opacity: 1;
+  margin-left: 20px;
+  -webkit-transition: opacity .2s ease-out .1s, min-width .2s, margin-left .2s;
+  -moz-transition: opacity .2s ease-out .1s, min-width .2s, margin-left .2s;
+  -ms-transition: opacity .2s ease-out .1s, min-width .2s, margin-left .2s;
+  -o-transition: opacity .2s ease-out .1s, min-width .2s, margin-left .2s;
+  transition: opacity .2s ease-out .1s, min-width .2s, margin-left .2s;
+} 

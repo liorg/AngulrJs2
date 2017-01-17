@@ -1,5 +1,5 @@
 ﻿//https://coryrylan.com/blog/angular-observable-data-services
-
+/// <reference path="./globals.d.ts" />
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable  } from 'rxjs/Observable';
@@ -15,6 +15,8 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/publish';
 
 import { Result } from './Result.Model';
+import { ProfileDetail } from './ProfileDetail.Model';
+
 import {LocalStorageService, SessionStorageService} from 'ng2-webstorage';
 import {ChannelService, ConnectionState, SessionStatus, passangerLocked, userHandle} from "./channel.service";
 
@@ -85,6 +87,7 @@ export interface passengerDetail {
     ticket: string;
     pnr: string;
     handlyByName: string;
+    handlyById: string;
     isHandleBy: boolean;
     cabin: string;
     isSelected: boolean;
@@ -111,7 +114,6 @@ export interface flightDetail {
 export class PassengersBackendService {
     //https://angular-2-training-book.rangle.io/handout/observables/cold_vs_hotObsv_observables.html
     hotObsv: Rx.ConnectableObservable<SessionStatus>;
-    observer: Observer<SessionStatus>;
     subscription: Subscription;
     private channel = "tasks";
     connectionState$: Observable<string>;
@@ -120,22 +122,31 @@ export class PassengersBackendService {
     private _passengers: BehaviorSubject<passengerDetail[]>;
     private baseUrl: string;
     private dataStore: currentContextCache;
-
+    profileModel: Result<ProfileDetail>;
     private cachName: string = "currentContextCache1";
-    get self(): PassengersBackendService {
-        return this;
-    }
+    //get self(): PassengersBackendService {
+    //    return this;
+    //}
     constructor(private http: Http, private _localSession: SessionStorageService,
         private channelService: ChannelService,
         private _uiStateStore: UiStateStore
     ) {
+        this.profileModel = profileUser;
         // Let's wire up to the signalr observables
         this.connectionState$ = this.channelService.connectionState$
             .map((state: ConnectionState) => {
                 debugger;
                 let connectionName = ConnectionState[state];
                 return connectionName;
-            });//.share();//share 
+            }).share();//share 
+        this.connectionState$.subscribe((status: string) => {
+            if (status == "Disconnected") {
+                if (this.dataStore != null) {
+                    this.dataStore.forceReload = true;
+                    this.saveSessionStore(this.dataStore);
+                }
+            }
+        }, (error: any) => { });
 
         this.channelService.error$.subscribe(
             (error: any) => {
@@ -171,45 +182,6 @@ export class PassengersBackendService {
         console.log("Starting the channel service");
 
         this.channelService.start();
-        debugger;
-        this.observer = {
-            next: function (sessionStatus: SessionStatus) {
-                debugger;
-                let data = this.self.getCurrentCache();
-                
-                if (data != null && sessionStatus != null && sessionStatus.users != null && sessionStatus.users.length > 0) {
-                    for (let i = 0; i < sessionStatus.users.length; i++) {
-                        let user = sessionStatus.users[i];
-                        for (let j = 0; j < user.passangers.length; j++) {
-                            let changed=user.passangers[j];
-                            let passanger = data.passengers.filter(pp => pp.id == changed.passangerid);
-                            if (passanger != null && passanger[0]!=null) {
-                                passanger[0].firstName = user.firstName;
-                                passanger[0].lastName = user.lastName;
-                                passanger[0].isHandleBy = changed.isLocked;
-        
-                            }
-                        }
-                    }
-                    this.self.saveSessionStore(data);
-                    
-                }
-                console.log(sessionStatus.state);
-            },
-            error: function (err) {
-                debugger;
-                console.log('Error: %s', err);
-                this._uiStateStore.signalErr(err);
-
-                if (this.dataStore != null) {
-                    this.dataStore.forceReload = true;
-                    this.saveSessionStore(this.dataStore);
-                }
-            },
-            complete: function () {
-                console.log('Completed');
-            }
-        };
 
         this.hotObsv = this.channelService.sub(this.channel).publish();
         this.hotObsv.connect();//hot
@@ -230,12 +202,13 @@ export class PassengersBackendService {
         return this.dataStore.passengers;
     }
 
-    loadSessionStore(flight: string): void {
+    loadSessionStore(flight: string, forceNeed: boolean = true): void {
         let data = this.getCurrentCache();
         if (data != null)
             this.dataStore = data;
 
-        if (this.dataStore == null || this.dataStore.forceReload == true || this.dataStore.passengers == null || this.dataStore.passengers.length == 0) {
+        if (this.dataStore == null ||
+            (this.dataStore.forceReload == true && forceNeed == true) || this.dataStore.passengers == null || this.dataStore.passengers.length == 0) {
             this.forceLoad(flight);
         }
         else {
@@ -258,6 +231,7 @@ export class PassengersBackendService {
             .subscribe((data: Result<passengerDetail[]>) => {
                 debugger;
                 this.dataStore.passengers = data.model;
+                this.dataStore.forceReload = data.isErr;
                 if (data.isErr) {
                     this._uiStateStore.endBackendAction(data.desc, true);
                 } else {
@@ -265,8 +239,8 @@ export class PassengersBackendService {
                     debugger;
                     this.subscription = this.hotObsv.subscribe((sessionStatus: SessionStatus) => {
                         debugger;
-                        let data = this.self.getCurrentCache();
-
+                        let data = this.dataStore;//this.getCurrentCache();
+                        let foundAny = false;
                         if (data != null && sessionStatus != null && sessionStatus.users != null && sessionStatus.users.length > 0) {
                             for (let i = 0; i < sessionStatus.users.length; i++) {
                                 let user = sessionStatus.users[i];
@@ -274,23 +248,30 @@ export class PassengersBackendService {
                                     let changed = user.passangers[j];
                                     let passanger = data.passengers.filter(pp => pp.id == changed.passangerid);
                                     if (passanger != null && passanger[0] != null) {
-                                       
-                                        passanger[0].isHandleBy = changed.isLocked;
-                                        passanger[0].handlyByName = user.firstName+' '+user.lastName;
-
-                                        
+                                        if (passanger[0].handlyById != user.userid) {
+                                            passanger[0].isHandleBy = changed.isLocked;
+                                            passanger[0].handlyByName = user.name;
+                                            passanger[0].isSelecting = false;
+                                            foundAny = true;
+                                        }
                                     }
                                 }
                             }
-                            this.self.saveSessionStore(data);
-
+                            if (foundAny) {
+                                data.forceReload = false;//no need to load again
+                                this.saveSessionStore(data);
+                            }
                         }
                         console.log(sessionStatus.state);
 
                     },
                         error => {
-                          
-
+                            console.log('Error: %s', error);
+                            this._uiStateStore.signalErr(error);
+                            if (this.dataStore != null) {
+                                this.dataStore.forceReload = true;
+                                this.saveSessionStore(this.dataStore);
+                            }
                         });
                 }
                 this.saveSessionStore(this.dataStore);
@@ -335,13 +316,10 @@ export class PassengersBackendService {
             }
             this.saveSessionStore(this.dataStore);
         }
-
-
     }
 
     saveSessionStore(dataStore: currentContextCache): void {
         dataStore.lastUpdate = new Date();
-        dataStore.forceReload = false;
         this._localSession.store(this.cachName, dataStore);
         this.dataStore = dataStore;
         this._passengers.next(Object.assign({}, this.dataStore).passengers);
@@ -379,6 +357,27 @@ export class PassengersBackendService {
             .map((res: Response) => { debugger; res.json() })
             .subscribe((message: string) => { debugger; console.log(message); });
     }
+    get selectingPassangers(): userHandle {
+        debugger;
+        let user = new userHandle();
+        user.name = this.profileModel.model.name;
+        user.userid = this.profileModel.model.id;
+        user.passangers = [];
+        let allselected = this.dataStore.passengers.filter(px => px.isSelecting);
+        for (let selection of allselected) {
+            user.passangers.push({
+                isLocked: true, passangerid: selection.id
+            });
+        }
+        return user;
+    }
 
-
+    sendNotity(request: userHandle): Observable<Result<string>> {
+        // debugger;
+        return this.http.post("/api/crm/p", request)
+            .map((response: Response) => <Result<string>>response.json())
+            .catch(this.handleError);
+    }
 }
+
+
