@@ -6,22 +6,17 @@ import { Observable  } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observer } from 'rxjs/Observer';
 import { Subscription }       from 'rxjs/Subscription';
-
+//import { Title }     from '@angular/platform-browser'
+import {Rx} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
-/*
-Returns an observable sequence that shares a single subscription to the underlying sequence.
-This operator is a specialization of publish which creates a subscription when the number of observers goes from zero to one, then shares that subscription with all subsequent observers until the number of observers returns to zero, at which point the subscription is disposed.
-*/
-import Rx from 'rxjs/Rx';
+
 
 import 'rxjs/add/operator/share';
-
 import 'rxjs/add/operator/publish';
-import "rxjs/add/operator/publishLast";
 
 import { Result } from './Result.Model';
 import {LocalStorageService, SessionStorageService} from 'ng2-webstorage';
-import {ChannelService, ConnectionState, ChannelEvent} from "./channel.service";
+import {ChannelService, ConnectionState, SessionStatus, passangerLocked, userHandle} from "./channel.service";
 
 //https://github.com/jhades/angular2-rxjs-observable-data-services
 //http://blog.angular-university.io/angular-2-application-architecture-building-applications-using-rxjs-and-functional-reactive-programming-vs-redux/
@@ -115,8 +110,8 @@ export interface flightDetail {
 @Injectable()
 export class PassengersBackendService {
     //https://angular-2-training-book.rangle.io/handout/observables/cold_vs_hotObsv_observables.html
-    hotObsv: Rx.ConnectableObservable<ChannelEvent>;
-    observer: Observer<ChannelEvent>;
+    hotObsv: Rx.ConnectableObservable<SessionStatus>;
+    observer: Observer<SessionStatus>;
     subscription: Subscription;
     private channel = "tasks";
     connectionState$: Observable<string>;
@@ -125,7 +120,11 @@ export class PassengersBackendService {
     private _passengers: BehaviorSubject<passengerDetail[]>;
     private baseUrl: string;
     private dataStore: currentContextCache;
-    private cachName:string = "currentContextCache";
+
+    private cachName: string = "currentContextCache1";
+    get self(): PassengersBackendService {
+        return this;
+    }
     constructor(private http: Http, private _localSession: SessionStorageService,
         private channelService: ChannelService,
         private _uiStateStore: UiStateStore
@@ -134,8 +133,9 @@ export class PassengersBackendService {
         this.connectionState$ = this.channelService.connectionState$
             .map((state: ConnectionState) => {
                 debugger;
-                return ConnectionState[state];
-            }).share();//share 
+                let connectionName = ConnectionState[state];
+                return connectionName;
+            });//.share();//share 
 
         this.channelService.error$.subscribe(
             (error: any) => {
@@ -159,6 +159,7 @@ export class PassengersBackendService {
             () => { console.log("signalr service has been started"); },
             () => {
                 console.warn("signalr service failed to start!");
+                debugger;
                 if (this.dataStore != null) {
                     this.dataStore.forceReload = true;
                     this.saveSessionStore(this.dataStore);
@@ -172,9 +173,28 @@ export class PassengersBackendService {
         this.channelService.start();
         debugger;
         this.observer = {
-            next: function (x: ChannelEvent) {
+            next: function (sessionStatus: SessionStatus) {
                 debugger;
-                console.log(x.Data);
+                let data = this.self.getCurrentCache();
+                
+                if (data != null && sessionStatus != null && sessionStatus.users != null && sessionStatus.users.length > 0) {
+                    for (let i = 0; i < sessionStatus.users.length; i++) {
+                        let user = sessionStatus.users[i];
+                        for (let j = 0; j < user.passangers.length; j++) {
+                            let changed=user.passangers[j];
+                            let passanger = data.passengers.filter(pp => pp.id == changed.passangerid);
+                            if (passanger != null && passanger[0]!=null) {
+                                passanger[0].firstName = user.firstName;
+                                passanger[0].lastName = user.lastName;
+                                passanger[0].isHandleBy = changed.isLocked;
+        
+                            }
+                        }
+                    }
+                    this.self.saveSessionStore(data);
+                    
+                }
+                console.log(sessionStatus.state);
             },
             error: function (err) {
                 debugger;
@@ -195,9 +215,9 @@ export class PassengersBackendService {
         this.hotObsv.connect();//hot
 
         this.baseUrl = 'api/CRM/GetAllPassangers?flight=';
-        this.dataStore = { passengers: [], flight: null, lastUpdate: new Date(),forceReload:false };
+        this.dataStore = { passengers: [], flight: null, lastUpdate: new Date(), forceReload: false };
 
-        let data = <currentContextCache>this._localSession.retrieve("currentContextCache");
+        let data = this.getCurrentCache();// <currentContextCache>this._localSession.retrieve("currentContextCache");
         if (data != null) {
             this.dataStore = data;
         }
@@ -206,12 +226,16 @@ export class PassengersBackendService {
         this.passengers = this._passengers.asObservable();
     }
 
+    get passangersCached(): passengerDetail[] {
+        return this.dataStore.passengers;
+    }
+
     loadSessionStore(flight: string): void {
         let data = this.getCurrentCache();
         if (data != null)
             this.dataStore = data;
 
-        if (this.dataStore == null || this.dataStore.forceReload==true || this.dataStore.passengers == null || this.dataStore.passengers.length == 0) {
+        if (this.dataStore == null || this.dataStore.forceReload == true || this.dataStore.passengers == null || this.dataStore.passengers.length == 0) {
             this.forceLoad(flight);
         }
         else {
@@ -224,7 +248,7 @@ export class PassengersBackendService {
         this._uiStateStore.startBackendAction('loading..');
         debugger;
         //https://www.bennadel.com/blog/3187-partial-stream-execution-a-case-for-hotObsv-rxjs-observables-in-angular-2-1-1.htm
-        if (this.subscription != null){
+        if (this.subscription != null) {
             debugger;
             this.subscription.unsubscribe();
         }
@@ -239,7 +263,35 @@ export class PassengersBackendService {
                 } else {
                     this._uiStateStore.endBackendAction('ok..', false);
                     debugger;
-                    this.subscription = this.hotObsv.subscribe(this.observer);
+                    this.subscription = this.hotObsv.subscribe((sessionStatus: SessionStatus) => {
+                        debugger;
+                        let data = this.self.getCurrentCache();
+
+                        if (data != null && sessionStatus != null && sessionStatus.users != null && sessionStatus.users.length > 0) {
+                            for (let i = 0; i < sessionStatus.users.length; i++) {
+                                let user = sessionStatus.users[i];
+                                for (let j = 0; j < user.passangers.length; j++) {
+                                    let changed = user.passangers[j];
+                                    let passanger = data.passengers.filter(pp => pp.id == changed.passangerid);
+                                    if (passanger != null && passanger[0] != null) {
+                                       
+                                        passanger[0].isHandleBy = changed.isLocked;
+                                        passanger[0].handlyByName = user.firstName+' '+user.lastName;
+
+                                        
+                                    }
+                                }
+                            }
+                            this.self.saveSessionStore(data);
+
+                        }
+                        console.log(sessionStatus.state);
+
+                    },
+                        error => {
+                          
+
+                        });
                 }
                 this.saveSessionStore(this.dataStore);
             }, error => {
@@ -266,20 +318,30 @@ export class PassengersBackendService {
         debugger;
         let data = this.getCurrentCache();
         if (data == null) {
-            this.dataStore = { passengers: [], flight: flightDetail, lastUpdate: new Date() };
+            this.dataStore = { passengers: [], flight: flightDetail, lastUpdate: new Date, forceReload: true };
         }
-        if (this.dataStore != null && this.dataStore.flight != null) {
-            if (this.dataStore.flight.id != flightDetail.id) {
+        if (this.dataStore != null) {
+            if (this.dataStore.flight != null) {
+                if (this.dataStore.flight.id != flightDetail.id) {
+                    this.dataStore.passengers = [];
+                    this.dataStore.flight = flightDetail;
+                    this.dataStore.forceReload = true;
+                }
+            }
+            else {
                 this.dataStore.passengers = [];
                 this.dataStore.flight = flightDetail;
+                this.dataStore.forceReload = true;
             }
             this.saveSessionStore(this.dataStore);
         }
+
 
     }
 
     saveSessionStore(dataStore: currentContextCache): void {
         dataStore.lastUpdate = new Date();
+        dataStore.forceReload = false;
         this._localSession.store(this.cachName, dataStore);
         this.dataStore = dataStore;
         this._passengers.next(Object.assign({}, this.dataStore).passengers);
@@ -296,62 +358,6 @@ export class PassengersBackendService {
         return Observable.throw(error.json().error || 'Server error');
     }
 
-    anySelectingPassangers(): boolean {
-        if (this.dataStore.passengers != null && this.dataStore.passengers.length > 0) {
-            let findPass = this.dataStore.passengers.filter(
-                pass => pass.isSelecting === true);
-            debugger;
-            if (findPass != null && findPass.length > 1)
-                return true;
-        }
-        return false;
-    }
-
-    badgeCount(): string {
-        return this.passengersSelectedCount().toString();
-    }
-
-    passengersSelectedCount(): number {
-        let count = this.dataStore.passengers.filter(pe => pe.isSelected == true).length;
-        return count;
-    }
-
-    getPassengersSelected(): passengerDetail[] {
-        return this.dataStore.passengers.filter(pe => pe.isSelected == true);
-    }
-
-    setTrashSelectingToSelected(): number {
-        let trashsAsQuerable = this.dataStore.passengers.filter(pas => pas.isTrashing);
-        let trashs = trashsAsQuerable.forEach(pass => {
-            pass.isSelected = false;
-            pass.isTrashing = false;
-        });
-        let count = trashsAsQuerable.length;
-        this._passengers.next(Object.assign({}, this.dataStore).passengers);
-        return count;
-    }
-
-    changeSelectingToSelected() {
-        debugger;
-        this.dataStore.passengers.forEach(pass => {
-            if (pass.isSelecting) {
-                pass.isSelected = pass.isHandleBy ? false : true;
-                pass.isSelecting = false;
-            }
-        });
-
-        this._passengers.next(Object.assign({}, this.dataStore).passengers);
-    }
-
-    cancelPassengersselected(): void {
-        this.dataStore.passengers.forEach(pass => {
-            pass.isSelected = false;
-            pass.isTrashing = false;
-        });
-
-        this._passengers.next(Object.assign({}, this.dataStore).passengers);
-    }
-
     updatePassenger(passenger: passengerDetail) {
         this.dataStore.passengers.forEach((p, i) => {
             if (p.id === passenger.id) {
@@ -359,15 +365,20 @@ export class PassengersBackendService {
                 this.dataStore.passengers[i] = passenger;
             }
         });
-
-
         this._passengers.next(Object.assign({}, this.dataStore).passengers);
 
     }
 
+    publish(): void {
+        this._passengers.next(Object.assign({}, this.dataStore).passengers);
+    }
+
     callPingSignalR(): void {
-        this.http.get("/tasks/long")
+        //this.http.get("/tasks/long")
+        this.http.get("/api/Crm/t")
             .map((res: Response) => { debugger; res.json() })
             .subscribe((message: string) => { debugger; console.log(message); });
     }
+
+
 }

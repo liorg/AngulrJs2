@@ -2,7 +2,7 @@
 
 import {Injectable, Inject} from "@angular/core";
 import { Subject } from "rxjs/Subject";
-
+import { Title }     from '@angular/platform-browser'
 import { Observable } from 'rxjs/Observable';
 /**
  * When SignalR runs it will add functions to the global $ variable 
@@ -27,21 +27,30 @@ export class ChannelConfig {
     channel: string;
 }
 
-export class ChannelEvent {
-    Name: string;
-    ChannelName: string;
-    Timestamp: Date;
-    Data: any;
-    Json: string;
-
-    constructor() {
-        this.Timestamp = new Date();
-    }
+export class passangerLocked {
+    passangerid: string;
+    isLocked: boolean; 
 }
+
+export class userHandle {
+    userid: string;
+    firstName: string;
+    lastName: string;
+    title: string;
+    passangers: passangerLocked[];
+}
+
+export class SessionStatus {
+    state: number;
+    timestamp: Date;
+    users: userHandle[];
+}
+
+
 
 class ChannelSubject {
     channel: string;
-    subject: Subject<ChannelEvent>;
+    subject: Subject<SessionStatus>;
 }
 
 /**
@@ -77,7 +86,7 @@ export class ChannelService {
     private connectionStateSubject = new Subject<ConnectionState>();
     private startingSubject = new Subject<any>();
     private errorSubject = new Subject<any>();
-
+    titleName: string;
     // These are used to track the internal SignalR state 
     //
     private hubConnection: any;
@@ -88,6 +97,7 @@ export class ChannelService {
     private subjects = new Array<ChannelSubject>();
 
     constructor(
+        private _titleService: Title,
         @Inject(SignalrWindow) private window: SignalrWindow,
         @Inject("channel.config") private channelConfig: ChannelConfig
     ) {
@@ -96,7 +106,7 @@ export class ChannelService {
         }
 
         // Set up our observables
-        debugger;
+        this.titleName = _titleService.getTitle();
         this.connectionState$ = this.connectionStateSubject.asObservable();
         this.error$ = this.errorSubject.asObservable();
         this.starting$ = this.startingSubject.asObservable();
@@ -108,9 +118,7 @@ export class ChannelService {
         // Define handlers for the connection state events
         //
         this.hubConnection.stateChanged((state: any) => {
-            debugger;
             let newState = ConnectionState.Connecting;
-
             switch (state.newState) {
                 case this.window.$.signalR.connectionState.connecting:
                     newState = ConnectionState.Connecting;
@@ -125,9 +133,9 @@ export class ChannelService {
                     newState = ConnectionState.Disconnected;
                     break;
             }
-
+            let connectionName = ConnectionState[newState];
+            this._titleService.setTitle(connectionName + " " + this.titleName);
             // Push the new state on our subject
-            //
             this.connectionStateSubject.next(newState);
         });
 
@@ -139,9 +147,9 @@ export class ChannelService {
             this.errorSubject.next(error);
         });
 
-        this.hubProxy.on("onEvent", (channel: string, ev: ChannelEvent) => {
+        this.hubProxy.on("onEvent", (channel: string, ev: SessionStatus) => {
             //console.log(`onEvent - ${channel} channel`, ev);
-
+            debugger;
             // This method acts like a broker for incoming messages. We 
             //  check the interal array of subjects to see if one exists
             //  for the channel this came in on, and then emit the event
@@ -187,7 +195,7 @@ export class ChannelService {
      * Get an observable that will contain the data associated with a specific 
      * channel 
      * */
-    sub(channel: string): Observable<ChannelEvent>
+    sub(channel: string): Observable<SessionStatus>
     {
         debugger;
         // Try to find an observable that we already created for the requested 
@@ -196,7 +204,6 @@ export class ChannelService {
         let channelSub = this.subjects.find((x: ChannelSubject) => {
             return x.channel === channel;
         }) as ChannelSubject;
-
         // If we already have one for this event, then just return it
         //
         if (channelSub !== undefined) {
@@ -216,7 +223,7 @@ export class ChannelService {
         //
         channelSub = new ChannelSubject();
         channelSub.channel = channel;
-        channelSub.subject = new Subject<ChannelEvent>();
+        channelSub.subject = new Subject<SessionStatus>();
         this.subjects.push(channelSub);
 
         // Now SignalR is asynchronous, so we need to ensure the connection is
@@ -253,7 +260,7 @@ export class ChannelService {
      * production app the server would ensure that only authorized clients can
      * actually emit the message, but here we're not concerned about that.
      */
-    publish(ev: ChannelEvent): void {
+    publish(ev: SessionStatus): void {
         this.hubProxy.invoke("Publish", ev);
     }
 

@@ -217,6 +217,7 @@
     <Content Include="App\home\welcome.component.html" />
     <Content Include="App\Index.html" />
     <Content Include="App\products\products.component.html" />
+    <Content Include="App\profile.component.html" />
     <Content Include="App\Profile\Profile.component.html" />
     <Content Include="Comp\Tester.html" />
     <Content Include="configExample\helpers.js" />
@@ -700,10 +701,13 @@
     <TypeScriptCompile Include="App\products\Product.service.ts" />
     <TypeScriptCompile Include="App\products\products.component.ts" />
     <Content Include="src\app\app.component.html" />
+    <TypeScriptCompile Include="App\profile.service.ts" />
+    <TypeScriptCompile Include="App\ProfileDetail.Model.ts" />
     <TypeScriptCompile Include="App\Profile\Profile.component.ts" />
     <TypeScriptCompile Include="App\Profile\ProfileDetail.Model.ts" />
     <TypeScriptCompile Include="App\Profile\Result.Model.ts" />
     <TypeScriptCompile Include="App\Profile\XProfile.Service.ts" />
+    <TypeScriptCompile Include="App\Result.Model.ts" />
     <TypeScriptCompile Include="App\vendor.ts" />
     <TypeScriptCompile Include="appToProd\app.component.ts" />
     <TypeScriptCompile Include="appToProd\app.module.ts" />

@@ -1,0 +1,16 @@
+﻿<header>
+    <div class="logo">
+        <a href="index.html">
+            <img src="/images/EL_AL_New_Logo.svg" alt="EL AL logo" />
+        </a>
+    </div>
+    TUE {{loginDateMonth}} {{loginDateNum}}, {{loginDateYear}} | {{loginDateHour}}
+ 
+    <div class="user">
+        <a href="#">
+            <a [routerLink]="['/accommodation', '3423' ]">{{userTitle}}</a> 
+            <img src="/images/businessman.png" alt="dd" />
+        </a>
+    </div>
+</header>
+<router-outlet></router-outlet>
