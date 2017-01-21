@@ -1,4 +1,68 @@
-﻿using Elal.FlightPostponed.Dal;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR;
+using Newtonsoft.Json;
+using System.Threading;
+using System.Web.Http;
+using Elal.FlightPostponed.DataModel.ViewModel;
+using System.Collections.Generic;
+using Microsoft.AspNet.SignalR.Hubs;
+
+namespace Elal.FlightPostponed.MobileWeb.Controllers
+{
+    #region LockHub
+    [HubName("LockHub")]
+    public class LockHub : Hub
+    {
+        public async Task Subscribe(string channel)
+        {
+            await Groups.Add(Context.ConnectionId, channel);
+
+            var ev = new SessionStatus();
+            ev.Users = new List<UserHandle>();
+            ev.State = (int)StateSignalREnum.Sub;
+            await Publish(ev);
+        }
+
+
+        public Task Publish(SessionStatus channelEvent)
+        {
+            Clients.Group(SessionStatus.TaskChannel).GetNotify(SessionStatus.TaskChannel, channelEvent);
+            return Task.FromResult(0);
+        }
+        
+        public override Task OnConnected()
+        {
+            var ev = new SessionStatus();
+            ev.Users = new List<UserHandle>();
+            ev.State = (int)StateSignalREnum.Sub;
+
+            Publish(ev);
+
+            return base.OnConnected();
+        }
+
+
+        public override Task OnDisconnected(bool stopCalled)
+        {
+            var ev = new SessionStatus();
+            ev.Users = new List<UserHandle>();
+            ev.State = (int)StateSignalREnum.UnSub;
+
+            Publish(ev);
+             
+            return base.OnDisconnected(stopCalled);
+        }
+
+    }
+}
+    #endregion
+
+   
+
+   
+ 
+    using Elal.FlightPostponed.Dal;
 using Elal.FlightPostponed.DataModel;
 using Elal.FlightPostponed.DataModel.ViewModel;
 using Elal.FlightPostponed.Logic;
@@ -49,8 +113,7 @@ namespace Elal.FlightPostponed.MobileWeb.Controllers
                     var trackid = await logic.PassangersHandleUser(user);
                     //Guid tarckId = Guid.NewGuid();
                     ev.TrackId = trackid.ToString();
-                    //_context.Clients.Group(SessionStatus.TaskChannel).GetNotify(channel, ev);
-                    PulishEvent(channel, ev);
+                    _context.Clients.Group(SessionStatus.TaskChannel).GetNotify(channel, ev);
                     result.Model = ev.TrackId;
 
                 }
@@ -82,17 +145,9 @@ namespace Elal.FlightPostponed.MobileWeb.Controllers
             return response;
         }
 
-        private void PulishEvent(string channel, SessionStatus ev)
-        {
-            // _context.Clients.Group(SessionStatus.TaskChannel).GetNotify(channel, ev);
-            _context.Clients.All.GetNotify(channel, ev);
-
-            // throw new NotImplementedException();
-        }
-
         [HttpGet]
         [Route("t")]
-        public IHttpActionResult StatusPassanners(string p = "")
+        public IHttpActionResult StatusPassanners(string p="")
         {
             Guid id = Guid.NewGuid();
             string channel = SessionStatus.TaskChannel;// "lockedChanges";
@@ -101,11 +156,11 @@ namespace Elal.FlightPostponed.MobileWeb.Controllers
             Guid tarckId = Guid.NewGuid();
             var user = new UserHandle
             {
-                UserId = Guid.Parse("D897C355-DA9E-E111-8DD2-015056B70063").ToString(),
+                UserId=Guid.Parse("D897C355-DA9E-E111-8DD2-015056B70063").ToString(),
                 Name = "xxx"
             };
             Guid.TryParse(p, out id);
-
+           
 
             user.PassangersLocked = new List<PassangerLocked>();
             ev.State = (int)StateSignalREnum.Pub;
@@ -113,8 +168,8 @@ namespace Elal.FlightPostponed.MobileWeb.Controllers
             user.PassangersLocked.Add(new PassangerLocked { IsLocked = true, PassangerId = Guid.Parse("28270C47-DA8B-46E9-AF9A-000094D1A000").ToString() });
             user.PassangersLocked.Add(new PassangerLocked { IsLocked = true, PassangerId = id.ToString() });
             ev.Users.Add(user);
-            //_context.Clients.Group(SessionStatus.TaskChannel).GetNotify(channel, ev);
-            PulishEvent(channel, ev);
+            _context.Clients.Group(SessionStatus.TaskChannel).GetNotify(channel, ev);
+
             return Ok(tarckId.ToString());
         }
 
@@ -344,49 +399,6 @@ namespace Elal.FlightPostponed.MobileWeb.Controllers
             }
         }
 
-        [Route("GetFlightPassangers")]
-        [AcceptVerbs("GET")]
-        public async Task<HttpResponseMessage> GetFlightPassangers(string flight, string user, string order)
-        {
-            Result<ContextPassangers> result = new Result<ContextPassangers>();
-            using (FlightPostponedContext context = new FlightPostponedContext())
-            {
-                try
-                {
-
-                    FlightLogic logic = new FlightLogic(new Dal.Repository.FlightRepository(context), new Dal.Repository.FlightPostponedRepository(context));
-                    result.Model = await logic.GetFlightPassangers(flight, user, order);
-                }
-                catch (ErrorLogic errlogic)
-                {
-                    result.IsErrUnandleException = false;
-                    result.IsErr = true;
-                    result.TitleErr = errlogic.ErrorTitle;
-                    result.ErrDesc = errlogic.Message;
-                    ErrorHandle(errlogic);
-                }
-                catch (Exception e)
-                {
-                    result.IsErrUnandleException = true;
-                    result.IsErr = true;
-                    result.TitleErr = ErrorLogic.UNHANDLE_EXCECPTION;
-                    result.ErrDesc = e.Message;
-                    ErrorHandle(e);
-                }
-
-                var response = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new ObjectContent<Result<ContextPassangers>>(result,
-                               new JsonMediaTypeFormatter(),
-                                new MediaTypeWithQualityHeaderValue("application/json"))
-                };
-                response.Headers.CacheControl = new CacheControlHeaderValue();
-                response.Headers.CacheControl.NoStore = true;
-                return response;
-            }
-        }
-
-
 
         [Route("CreateNewOrderFlightPostponed")]
         [AcceptVerbs("POST")]
@@ -464,3 +476,6 @@ namespace Elal.FlightPostponed.MobileWeb.Controllers
     }
 
 }
+
+
+  

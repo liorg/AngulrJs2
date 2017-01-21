@@ -241,6 +241,7 @@
     <Content Include="config\webpack.dev.js" />
     <Content Include="config\webpack.prod.js" />
     <Content Include="config\webpack.test.js" />
+    <Content Include="Controllers\LockHub.txt" />
     <Content Include="dist\lib\%40angular\common.umd.js" />
     <Content Include="dist\lib\%40angular\compiler.umd.js" />
     <Content Include="dist\lib\%40angular\core.umd.js" />
@@ -663,13 +664,13 @@
     <Compile Include="Controllers\CrmController.cs" />
     <Compile Include="Controllers\EventHub.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LockHub.cs" />
     <Compile Include="Controllers\PlaneHub.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\PlaneSeatsArrangement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="signalr\LockHub.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\FlightView.cs" />
     <Compile Include="ViewModel\HotelsViewModel.cs" />
@@ -761,6 +762,7 @@
     <Folder Include="dist\lib\css\fonts\" />
     <Folder Include="images\" />
     <Folder Include="js\Account\" />
+    <Folder Include="signalr\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
