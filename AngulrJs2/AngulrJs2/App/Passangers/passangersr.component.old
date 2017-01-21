@@ -2,21 +2,22 @@
 ///<reference path=".././Application.d.ts" />
 /// <reference path=".././globals.d.ts" />
 import { ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, Renderer, ElementRef, Component, OnInit, AfterViewInit, OnDestroy, Injectable, Pipe, PipeTransform} from '@angular/core';
-import { Router, ActivatedRoute }    from '@angular/router';
-import { Subscription }              from 'rxjs/Subscription';
-import { Result }                    from '../Result.Model'
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription }       from 'rxjs/Subscription';
+import { Result } from '../Result.Model'
 import { PassangersSelectedFilter, passangersDataFilter }     from './CustomerSelectedFilter.pipe';
+//import { FlightDetail } from './FlightDetail.Model';
 import { orderFlightPostponedRequest } from './orderFlightPostponedRequest.Model';
-import { passangerFilter }          from './passangerFilter.Model'
-import { PassengersBackendService, passengerDetail, flightDetail, contextPassangers, UiStateStore, UiState} from '../PassengersBackendService.service';
-import { ProfileDetail }            from '../ProfileDetail.Model';
-import { PassengerService }         from './passanger.service';
+import { passangerFilter } from './passangerFilter.Model'
+import { PassengersBackendService, passengerDetail, flightDetail, UiStateStore, UiState} from '../PassengersBackendService.service';
+
+import { PassengerService } from './passanger.service';
 
 @Component({
     moduleId: "app/Passangers/",
     selector: 'pm-passangersDetails',
     templateUrl: 'passangersr.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
     PassangersTitle: string = '';
@@ -29,11 +30,11 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
     CreateResultModel: Result<string>;
     hasData: boolean = false;
     FlightViewDetail: flightDetail;
+    //  badgeCount: string = "0";
     isReservationDetailShow: boolean = false;
     bodyRoot: any;
     nextDisable: boolean = false;
-    profileModel: Result<ProfileDetail>;
-    currentOrder: string = '';
+
     constructor(private _cd: ChangeDetectorRef,
         private _route: ActivatedRoute, private renderer: Renderer, private elRef: ElementRef,
         private _router: Router,
@@ -41,26 +42,6 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
         private _passengerService: PassengerService,
         private _uiStateStore: UiStateStore
     ) {
-
-        _passengersBackendService.isDisconected$.subscribe((isdisconnect) => {
-            console.log(isdisconnect);
-            if (isdisconnect) {
-                setTimeout(function () {
-                    debugger;
-                    _passengersBackendService.startChannel();
-                }, 5000);
-            }
-        },
-            (err) => {
-            });
-
-        _passengersBackendService.flight$.subscribe((fli) => {
-            debugger;
-           // console.log(fli.name);
-            this.FlightViewDetail = fli;
-        });
-
-        this.profileModel = profileUser;
         this.allPassangersFilter = { name: '', isSelected: false };
         this.passangersSelectedFilter = { name: '', isSelected: true };
         this._uiStateStore.uiState.subscribe((uistate) => {
@@ -76,20 +57,26 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
         this.renderer.setElementClass(this.bodyRoot, 'details-visible', isShow);
     }
 
+    PingSignalR() {
+        debugger;
+        this._passengersBackendService.callPingSignalR();
+    }
+
     ngOnInit(): void {
         this.bodyRoot = this.elRef.nativeElement.parentElement.parentElement;
         this.sub = this._route.params.subscribe(
             params => {
-                debugger;
-                if (params['oid'] != null) {
-                    this.currentOrder = params['oid'].toString();
-                };
+                let type = params['type'];
                 let id = params['id'];
                 this.filghtId = id.toString();
-                // let getCurrentFlight = this.getFlight(this.filghtId);
+                let getCurrentFlight = this.getFlight(this.filghtId);
 
-                // this.FlightViewDetail = getCurrentFlight;
-                this.setPassangers(this.filghtId,this.currentOrder);
+                if (getCurrentFlight == null || getCurrentFlight.id != this.filghtId) {
+                    this._router.navigate(['/Flight', this.filghtId]);
+                    return;
+                }
+                this.FlightViewDetail = getCurrentFlight;
+                this.setPassangers(this.filghtId);
 
             });
     }
@@ -121,6 +108,7 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     setClasses(passenger: passengerDetail) {
+        //console.log(passenger.id);
         let classes = {
             panel: true,
             passenger: true,
@@ -132,7 +120,13 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
 
     trash_click(): void {
         debugger;
-        this.setRollBack();
+        let passengersSelectedCount = this.passengersSelectedCount();
+
+        let trashCount = this.setTrashSelectingToSelected();
+
+        if (trashCount == passengersSelectedCount) {
+            this.showHideSelectedPassanger(false);
+        }
     }
 
     checkPassenger_click(passenger: passengerDetail): void {
@@ -247,13 +241,14 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
         }
     }
 
-    setPassangers(num: string,order:string): void {
+    setPassangers(num: string): void {
         this._passengersBackendService.loadSessionStore(num);
     }
 
-    //getFlight(num: string): flightDetail {
-    //    return this._passengersBackendService.getCurrentFlight();
-    //}
+    getFlight(num: string): flightDetail {
+        return this._passengersBackendService.getCurrentFlight();
+    }
+
 
     anySelectingPassangers(): boolean {
         let passengers = this._passengersBackendService.passangersCached;
@@ -278,31 +273,6 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
         return passengers.filter(pe => pe.isSelected == true);
     }
 
-    setRollBack(): void {
-        let passengersSelectedCount = this.passengersSelectedCount();
-        this._passengersBackendService.sendNotity(this._passengersBackendService.rollBackPassangers).subscribe((res) => {
-            debugger;
-
-            let passengers = this._passengersBackendService.passangersCached;
-
-            let trashsAsQuerable = passengers.filter(pas => pas.isTrashing);
-            let trashs = trashsAsQuerable.forEach(pass => {
-                pass.isSelected = false;
-                pass.isTrashing = false;
-            });
-            let trashCount = trashsAsQuerable.length;
-            this._passengersBackendService.publish();
-            if (trashCount == passengersSelectedCount) {
-                this.showHideSelectedPassanger(false);
-            }
-
-        }, (err) => {
-            debugger;
-            console.warn(err);
-        });
-
-    }
-
     setTrashSelectingToSelected(): number {
         let passengers = this._passengersBackendService.passangersCached;
         let trashsAsQuerable = passengers.filter(pas => pas.isTrashing);
@@ -319,21 +289,16 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
         debugger;
         this._passengersBackendService.sendNotity(this._passengersBackendService.selectingPassangers).subscribe((res) => {
             debugger;
-            if (res.isErr) {
-                console.log(res.desc);
-            }
-            else {
-                let passengers = this._passengersBackendService.passangersCached;
-                passengers.forEach(pass => {
-                    if (pass.isSelecting) {
-                        pass.isSelected = pass.isHandleBy ? false : true;
-                        pass.isSelecting = false;
-                    }
-                });
-                this._passengersBackendService.publish();
-                this.showHideSelectedPassanger(true);
-                this.nextDisable = true;
-            }
+            let passengers = this._passengersBackendService.passangersCached;
+            passengers.forEach(pass => {
+                if (pass.isSelecting) {
+                    pass.isSelected = pass.isHandleBy ? false : true;
+                    pass.isSelecting = false;
+                }
+            });
+            this._passengersBackendService.publish();
+            this.showHideSelectedPassanger(true);
+            this.nextDisable = true;
         }, (err) => {
             debugger;
             console.warn(err);
@@ -347,10 +312,6 @@ export class PassangersrComponent implements AfterViewInit, OnInit, OnDestroy {
             pass.isTrashing = false;
         });
         this._passengersBackendService.publish();
-    }
-
-    ping(): void {
-        this._passengersBackendService.ping();
     }
 }
 

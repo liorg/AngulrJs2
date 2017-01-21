@@ -218,6 +218,7 @@
     <Content Include="App\Index.html" />
     <Content Include="App\Passangers\passangers.component.css" />
     <Content Include="App\Passangers\passangers.component.html" />
+    <None Include="App\Passangers\passangersr.component.html.old" />
     <Content Include="App\Passangers\passangersr.component.html" />
     <Content Include="App\products\products.component.html" />
     <Content Include="App\profile.component.html" />
@@ -231,6 +232,8 @@
     <Content Include="configExample\webpack.prod.js" />
     <Content Include="configExample\webpack.test.js" />
     <Content Include="config\helpers.js" />
+    <Content Include="App\channel.service.old" />
+    <Content Include="App\PassengersBackendService.service.old" />
     <None Include="config\gulpEnvConfig.json" />
     <Content Include="config\karma-test-shim.js" />
     <Content Include="config\karma.conf.js" />
@@ -713,6 +716,7 @@
     <TypeScriptCompile Include="App\Passangers\passanger.service.ts" />
     <TypeScriptCompile Include="App\Passangers\PassangerFilter.Model.ts" />
     <TypeScriptCompile Include="App\Passangers\passangers.component.ts" />
+    <None Include="App\Passangers\passangersr.component.old" />
     <TypeScriptCompile Include="App\Passangers\passangersr.component.ts" />
     <TypeScriptCompile Include="App\PassengersBackendService.service.ts" />
     <TypeScriptCompile Include="App\polyfills.ts" />

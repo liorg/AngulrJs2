@@ -2,7 +2,7 @@
     <a *ngIf="FlightViewDetail!=null">
         <span id="here">Flight</span>
         <span class="separator">|</span>
-        LY{{FlightViewDetail.number  }}/{{FlightViewDetail.destination }}
+        LY{{FlightViewDetail.number}}/{{FlightViewDetail.destination}}
     </a>
     <div class="right">
         <span class="muted">{{ (_passengersBackendService.passengers | passangersDataFilter:allPassangersFilter | async).length}}</span>
@@ -13,15 +13,18 @@
 
 <form action="#">
     <label class="sr-only" for="search-passenger">Search passenger</label>
-    <input type="search" id="search-passenger" name="search-passenger"
-           [(ngModel)]='allPassangersFilter.name'
+    <input type="search" id="search-passenger" name="search-passenger" 
+            [(ngModel)]='allPassangersFilter.name' 
            placeholder="Last Name / Ticket Number / PNR" />
-    <button><span class="sr-only">Search</span></button>
+    <button><span class="sr-only"  >Search</span></button>
+
+
 </form>
 
 <section>
+  
     <h1 class="fixed">
-        Passengers2.9
+        Passengers2.8
         <a id="search" href="javascript:;">
             <span class="sr-only">Search</span>
         </a>
@@ -37,7 +40,7 @@
     </h1>
 
     <div [attr.data-ticket]="passenger.id"
-         [ngClass]="setClasses(passenger)"
+         [ngClass]="setClasses(passenger)" 
          *ngFor="let passenger of _passengersBackendService.passengers | passangersDataFilter:allPassangersFilter | async ">
         <a class="check" (click)="selectedPassenger_click(passenger)"
            href="javascript:;"><span class="sr-only">Check passenger</span></a>
@@ -72,14 +75,14 @@
         <a class="trash" (click)="trash_click()" href="javascript:;"><span class="sr-only">Delete</span></a>
     </div>
     <div class="info">
-        <a [class.checked]="passenger.isTrashing" (click)="checkPassenger_click(passenger)" *ngFor="let passenger of _passengersBackendService.passengers | passangersDataFilter:passangersSelectedFilter | async" style="display: inline-block;"><div>{{passenger.title}}. {{passenger.firstName}} {{passenger.lastName}}</div><span class="membership matmid"></span></a>
+        <a [class.checked]="passenger.isTrashing"  (click)="checkPassenger_click(passenger)" *ngFor="let passenger of _passengersBackendService.passengers | passangersDataFilter:passangersSelectedFilter | async" style="display: inline-block;"><div>{{passenger.title}}. {{passenger.firstName}} {{passenger.lastName}}</div><span class="membership matmid"></span></a>
 
     </div>
     <div class="buttons">
         <p>
             To continue providing service to Passengers In Delayed Flights Click NEXT
         </p>
-        <a class="cancel" (click)="cancel_click()" href="javascript:;">Cancel</a>
-        <a [ngClass]="setClassNext()" (click)="next_click()">Next</a>
+        <a class="cancel"  (click)="cancel_click()" href="javascript:;">Cancel</a>
+        <a  [ngClass]="setClassNext()" (click)="next_click()">Next</a>
     </div>
 </div>

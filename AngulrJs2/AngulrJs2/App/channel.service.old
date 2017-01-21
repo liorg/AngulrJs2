@@ -4,7 +4,6 @@ import {Injectable, Inject} from "@angular/core";
 import { Subject } from "rxjs/Subject";
 import { Title }     from '@angular/platform-browser'
 import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 /**
  * When SignalR runs it will add functions to the global $ variable 
  * that you use to create connections to the hub. However, in this
@@ -30,7 +29,7 @@ export class ChannelConfig {
 
 export class passangerLocked {
     passangerid: string;
-    isLocked: boolean;
+    isLocked: boolean; 
 }
 
 export class userHandle {
@@ -95,21 +94,17 @@ export class ChannelService {
 
     // An internal array to track what channel subscriptions exist 
     //
-    //private subjects = new Array<ChannelSubject>();
-
-    private subjectSessionStatus = new Subject<SessionStatus>();
-    $subjectSessionStatus :Observable<SessionStatus>;
+    private subjects = new Array<ChannelSubject>();
 
     constructor(
         private _titleService: Title,
         @Inject(SignalrWindow) private window: SignalrWindow,
         @Inject("channel.config") private channelConfig: ChannelConfig
-    )
-    {
+    ) {
         if (this.window.$ === undefined || this.window.$.hubConnection === undefined) {
             throw new Error("The variable '$' or the .hubConnection() function are not defined...please check the SignalR scripts have been loaded properly");
         }
-        this.$subjectSessionStatus = this.subjectSessionStatus.asObservable();
+
         // Set up our observables
         this.titleName = _titleService.getTitle();
         this.connectionState$ = this.connectionStateSubject.asObservable();
@@ -159,7 +154,16 @@ export class ChannelService {
             //  check the interal array of subjects to see if one exists
             //  for the channel this came in on, and then emit the event
             //  on it. Otherwise we ignore the message.
-            this.subjectSessionStatus.next(ev);
+            //
+            let channelSub = this.subjects.find((x: ChannelSubject) => {
+                return x.channel === channel;
+            }) as ChannelSubject;
+
+            // If we found a subject then emit the event on it
+            //
+            if (channelSub !== undefined) {
+                return channelSub.subject.next(ev);
+            }
         });
 
     }
@@ -186,20 +190,78 @@ export class ChannelService {
                 this.startingSubject.error(error);
             });
     }
-   
-    publish(ev: SessionStatus): void {
-        this.hubProxy.invoke("Publish", ev);
+
+    /** 
+     * Get an observable that will contain the data associated with a specific 
+     * channel 
+     * */
+    sub(channel: string): Observable<SessionStatus>
+    {
+        debugger;
+        // Try to find an observable that we already created for the requested 
+        //  channel
+       
+        let channelSub = this.subjects.find((x: ChannelSubject) => {
+            return x.channel === channel;
+        }) as ChannelSubject;
+        // If we already have one for this event, then just return it
+        //
+        if (channelSub !== undefined) {
+            console.log(`Found existing observable for ${channel} channel`)
+            return channelSub.subject.asObservable();
+        }
+
+        //
+        // If we're here then we don't already have the observable to provide the
+        //  caller, so we need to call the server method to join the channel 
+        //  and then create an observable that the caller can use to received
+        //  messages.
+        //
+
+        // Now we just create our internal object so we can track this subject
+        //  in case someone else wants it too
+        //
+        channelSub = new ChannelSubject();
+        channelSub.channel = channel;
+        channelSub.subject = new Subject<SessionStatus>();
+        this.subjects.push(channelSub);
+
+        // Now SignalR is asynchronous, so we need to ensure the connection is
+        //  established before we call any server methods. So we'll subscribe to 
+        //  the starting$ stream since that won't emit a value until the connection
+        //  is ready
+        //
+        this.starting$.subscribe(() => {
+            this.hubProxy.invoke("Subscribe", channel)
+                .done(() => {
+                    console.log(`Successfully subscribed to ${channel} channel`);
+                })
+                .fail((error: any) => {
+                    channelSub.subject.error(error);
+                });
+        },
+            (error: any) => {
+                channelSub.subject.error(error);
+            });
+
+        return channelSub.subject.asObservable();
     }
 
-    ping(): void {
-        debugger;
-        this.hubProxy.invoke("Ping").done(() => {
-            debugger;
-            console.log(`Successfully subscribed to  channel`);
-        })
-            .fail((error: any) => {
-                debugger;
-            });
+    // Not quite sure how to handle this (if at all) since there could be
+    //  more than 1 caller subscribed to an observable we created
+    //
+    // unsubscribe(channel: string): Rx.Observable<any> {
+    //     this.observables = this.observables.filter((x: ChannelObservable) => {
+    //         return x.channel === channel;
+    //     });
+    // }
+
+    /** publish provides a way for calles to emit events on any channel. In a 
+     * production app the server would ensure that only authorized clients can
+     * actually emit the message, but here we're not concerned about that.
+     */
+    publish(ev: SessionStatus): void {
+        this.hubProxy.invoke("Publish", ev);
     }
 
 }

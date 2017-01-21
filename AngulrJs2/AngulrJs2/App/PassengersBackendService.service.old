@@ -112,30 +112,23 @@ export interface flightDetail {
     isSelected: boolean;
 }
 
-export interface contextPassangers {
-    flight: flightDetail;
-    passengers: passengerDetail[];
-}
-
 @Injectable()
 export class PassengersBackendService {
     //https://angular-2-training-book.rangle.io/handout/observables/cold_vs_hotObsv_observables.html
-    //hotObsv: Rx.ConnectableObservable<SessionStatus>;
-    //subscription: Subscription;
+    hotObsv: Rx.ConnectableObservable<SessionStatus>;
+    subscription: Subscription;
     private channel = "tasks";
     connectionState$: Observable<string>;
     passengers: Observable<passengerDetail[]>;
-
+    flightId: Observable<string>;
     private _passengers: BehaviorSubject<passengerDetail[]>;
-    private _flight: BehaviorSubject<flightDetail>;
-    flight$: Observable<flightDetail>;
-    // private baseUrl: string;
+    private baseUrl: string;
     private dataStore: currentContextCache;
     profileModel: Result<ProfileDetail>;
-    private cachName: string = "currentContextCache5";
+    private cachName: string = "currentContextCache1";
     private _isDisconnected: BehaviorSubject<boolean>;
     isDisconected$: Observable<boolean>;
-
+   
     constructor(private http: Http, private _localSession: SessionStorageService,
         private channelService: ChannelService,
         private _uiStateStore: UiStateStore
@@ -192,8 +185,11 @@ export class PassengersBackendService {
         );
 
         this.startChannel();
+       
+        this.hotObsv = this.channelService.sub(this.channel).publish();
+        this.hotObsv.connect();//hot
 
-        //this.baseUrl = 'api/CRM/GetAllPassangers?flight=';
+        this.baseUrl = 'api/CRM/GetAllPassangers?flight=';
         this.dataStore = {
             passengers: [],
             flight: null,
@@ -208,19 +204,6 @@ export class PassengersBackendService {
 
         this._passengers = <BehaviorSubject<passengerDetail[]>>new BehaviorSubject([]);
         this.passengers = this._passengers.asObservable();
-        this._flight = new BehaviorSubject({
-            id: '',
-            name: '',
-            number: '',
-            departure: '',
-            destination: '',
-            departureDates: '',
-            arrivedDates: '',
-            departureTime: '',
-            arrivedTime: '',
-            isSelected: false
-        });
-        this.flight$ = this._flight.asObservable();
     }
 
     startChannel(): void {
@@ -232,41 +215,82 @@ export class PassengersBackendService {
         return this.dataStore.passengers;
     }
 
-    loadSessionStore(flight: string, order: string, forceNeed: boolean = true): void {
+    loadSessionStore(flight: string,  forceNeed: boolean = true): void {
         let data = this.getCurrentCache();
         if (data != null)
             this.dataStore = data;
 
         if (this.dataStore == null ||
             (this.dataStore.forceReload == true && forceNeed == true) || this.dataStore.passengers == null || this.dataStore.passengers.length == 0) {
-            this.forceLoad(flight, order);
+            this.forceLoad(flight);
         }
         else {
-            this.publish();
+            this._passengers.next(Object.assign({}, this.dataStore).passengers);
         }
+
     }
 
-    forceLoad(flight: string, order: string) {
+    forceLoad(flight: string) {
         this._uiStateStore.startBackendAction('loading..');
-
-        let url = 'api/CRM/GetFlightPassangers?flight=' + flight + '&user=' + this.profileModel.model.id + '&order=' + order;
-        this.http.get(url)
-            .map((response: Response) => <Result<contextPassangers>>response.json())
+        debugger;
+        //https://www.bennadel.com/blog/3187-partial-stream-execution-a-case-for-hotObsv-rxjs-observables-in-angular-2-1-1.htm
+        if (this.subscription != null) 
+            this.subscription.unsubscribe();
+        
+        this.http.get(this.baseUrl + flight)
+            .map((response: Response) => <Result<passengerDetail[]>>response.json())
             .catch(this.handleError)
-            .subscribe((data: Result<contextPassangers>) => {
+            .subscribe((data: Result<passengerDetail[]>) => {
                 debugger;
-                this.dataStore.passengers = data.model.passengers;
-                this.dataStore.flight = data.model.flight;
+                this.dataStore.passengers = data.model;
                 this.dataStore.forceReload = data.isErr;
                 if (data.isErr) {
                     this._uiStateStore.endBackendAction(data.desc, true);
                 } else {
                     this._uiStateStore.endBackendAction('done', false);
-                    
+                    debugger;
+                    this.subscription = this.hotObsv.subscribe((sessionStatus: SessionStatus) => {
+                        debugger;
+                        let data = this.dataStore;//this.getCurrentCache();
+                        let foundAny = false;
+                        if (data != null && sessionStatus != null && sessionStatus.users != null && sessionStatus.users.length > 0) {
+                            for (let i = 0; i < sessionStatus.users.length; i++) {
+                                let user = sessionStatus.users[i];
+                                for (let j = 0; j < user.passangers.length; j++) {
+                                    let changed = user.passangers[j];
+                                    let passanger = data.passengers.filter(pp => pp.id == changed.passangerid);
+                                    if (passanger != null && passanger[0] != null) {
+                                        if (passanger[0].ownerRecordid != user.userid) {
+                                            passanger[0].isHandleBy = changed.isLocked;
+                                            passanger[0].handlyByName = changed.isLocked ? user.name : "";
+                                            passanger[0].handleById = user.userid;
+                                            passanger[0].isSelecting = false;
+                                            foundAny = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if (foundAny) {
+                                data.forceReload = false;//no need to load again
+                                this.saveSessionStore(data);
+                            }
+                        }
+                        console.log(sessionStatus.state);
+
+                    },
+                        error => {
+                            console.log('Error: %s', error);
+                            this._uiStateStore.signalErr(error);
+                            if (this.dataStore != null) {
+                                this.dataStore.forceReload = true;
+                                this.saveSessionStore(this.dataStore);
+                            }
+                        });
                 }
                 this.saveSessionStore(this.dataStore);
             }, error => {
-              
+                debugger;
+                //callbackErr(error)
                 this._uiStateStore.endBackendAction(error.toString, true);
             }
             );
@@ -274,6 +298,14 @@ export class PassengersBackendService {
 
     getCurrentCache(): currentContextCache {
         return <currentContextCache>this._localSession.retrieve(this.cachName);
+    }
+
+    getCurrentFlight(): flightDetail {
+        let data = this.getCurrentCache();
+        if (this.dataStore != null && this.dataStore.flight != null) {
+            return this.dataStore.flight;
+        }
+        return null;
     }
 
     saveSelectedFlight(flightDetail: flightDetail): void {
@@ -308,7 +340,7 @@ export class PassengersBackendService {
         dataStore.lastUpdate = new Date();
         this._localSession.store(this.cachName, dataStore);
         this.dataStore = dataStore;
-        this.publish();
+        this._passengers.next(Object.assign({}, this.dataStore).passengers);
     }
 
     saveCurrentState(): void {
@@ -335,12 +367,9 @@ export class PassengersBackendService {
     }
 
     publish(): void {
-        //this._passengers.next(Object.assign({}, this.dataStore).passengers);
-        let ob = Object.assign({}, this.dataStore);
-        this._passengers.next(ob.passengers);
-        this._flight.next(ob.flight);
+        this._passengers.next(Object.assign({}, this.dataStore).passengers);
     }
-
+    
     get selectingPassangers(): userHandle {
         debugger;
         let user = new userHandle();
@@ -378,11 +407,6 @@ export class PassengersBackendService {
         return this.http.post("/api/crm/sendNotity", request)
             .map((response: Response) => <Result<string>>response.json())
             .catch(this.handleError);
-    }
-
-    ping(): void {
-        debugger;
-        this.channelService.ping();
     }
 }
 
