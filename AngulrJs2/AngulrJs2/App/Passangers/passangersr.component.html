@@ -10,39 +10,45 @@
     </div>
 </div>
 
-
 <form action="#">
     <label class="sr-only" for="search-passenger">Search passenger</label>
     <input type="search" id="search-passenger" name="search-passenger"
-           [(ngModel)]='allPassangersFilter.name'
+           [(ngModel)]='allPassangersFilter.freeText' (keyup.enter)="search_click()"
            placeholder="Last Name / Ticket Number / PNR" />
-    <button><span class="sr-only">Search</span></button>
+    <button (click)="search_click()"><span class="sr-only">Search</span></button>
 </form>
 
 <section>
     <h1 class="fixed">
-        Passengers2.9
+        Passengers
         <a id="search" href="javascript:;">
             <span class="sr-only">Search</span>
         </a>
         <a id="new-reservation" (click)="new_reservation_click()" href="javascript:;">
             <span>NEW</span> Service reservation
         </a>
-        <a id="details-reservation" href="javascript:;">
+        <a id="details-reservation" (click)="viewDetails_click()" href="javascript:;">
             View details
         </a>
-        <a id="add-reservation" (click)="add_reservation_click()" href="javascript:;">
+        <a id="add-reservation" (click)="add_reservation_click()"
+           href="javascript:;">
             Add to list
         </a>
     </h1>
+    <div *ngIf="isLoading">
+        <loader-data></loader-data>
+    </div>
+    <div class="panel passenger" *ngIf="(_passengersBackendService.passengers | passangersDataFilter:allPassangersFilter | async)?.length==0">
 
+        <span style="text-align:center" class="name"> No Has Any Passanger </span>
+    </div>
     <div [attr.data-ticket]="passenger.id"
          [ngClass]="setClasses(passenger)"
          *ngFor="let passenger of _passengersBackendService.passengers | passangersDataFilter:allPassangersFilter | async ">
         <a class="check" (click)="selectedPassenger_click(passenger)"
            href="javascript:;"><span class="sr-only">Check passenger</span></a>
-        <a href="#">
-            <span class="membership matmid"></span>
+        <a  (click)="showPassanger_click(passenger)"  href="javascript:;">
+            <app-member [member]="passenger.member"></app-member>
             <span class="name">{{passenger.title}}. {{passenger.firstName}} {{passenger.lastName}}</span>
             <hr />
             <div class="info">
@@ -62,7 +68,6 @@
             </div>
         </a>
     </div>
-
 </section>
 
 <div id="reservation-details">
@@ -71,15 +76,20 @@
         <span class="badge">{{ (_passengersBackendService.passengers | passangersDataFilter:passangersSelectedFilter | async).length}}</span>
         <a class="trash" (click)="trash_click()" href="javascript:;"><span class="sr-only">Delete</span></a>
     </div>
-    <div class="info">
-        <a [class.checked]="passenger.isTrashing" (click)="checkPassenger_click(passenger)" *ngFor="let passenger of _passengersBackendService.passengers | passangersDataFilter:passangersSelectedFilter | async" style="display: inline-block;"><div>{{passenger.title}}. {{passenger.firstName}} {{passenger.lastName}}</div><span class="membership matmid"></span></a>
 
+    <div class="info">
+        <a [class.checked]="passenger.isTrashing" (click)="checkPassenger_click(passenger)" *ngFor="let passenger of _passengersBackendService.passengers | passangersDataFilter:passangersSelectedFilter | async" style="display: inline-block;">
+            <div>{{passenger.title}}. {{passenger.firstName}} {{passenger.lastName}}</div>
+            <app-member [member]="passenger.member"></app-member>
+        </a>
     </div>
     <div class="buttons">
         <p>
             To continue providing service to Passengers In Delayed Flights Click NEXT
         </p>
         <a class="cancel" (click)="cancel_click()" href="javascript:;">Cancel</a>
-        <a [ngClass]="setClassNext()" (click)="next_click()">Next</a>
+        <a [class.disabled]="nextEdit$ | async" class="next" (click)="next_click()">Next</a>
     </div>
 </div>
+
+<div dialogPassangerAnchor></div>

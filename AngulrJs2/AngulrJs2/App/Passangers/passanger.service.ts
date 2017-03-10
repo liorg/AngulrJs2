@@ -1,16 +1,15 @@
 ﻿import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
-import { Observable, } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import { Result } from '../Result.Model';
-import { passenger } from './passanger.Model';
-import { FlightDetail } from './FlightDetail.Model';
-import { orderFlightPostponedRequest } from './orderFlightPostponedRequest.Model';
+
+import { orderFlightPostponedRequest, passengerExtra } from './orderFlightPostponedRequest.Model';
 
 @Injectable()
 export class PassengerService {
@@ -19,17 +18,11 @@ export class PassengerService {
     private _urlCreateFlightPostponed = 'api/CRM/CreateNewOrderFlightPostponed';
     constructor(private _http: Http) { }
 
-    getAllPassangers(flight: string): Observable<Result<passenger[]>> {
-       // debugger;
-        return this._http.get(this._url + flight)
-            .map((response: Response) => <Result<passenger[]>>response.json())
-            .catch(this.handleError);
-    } 
-
-    getFlight(flightid: string): Observable<Result<FlightDetail>> {
+    getExtraPassenger(oid: string): Observable<Result<passengerExtra>> {
         // debugger;
-        return this._http.get(this._urlFindFlight + flightid)
-            .map((response: Response) => <Result<FlightDetail>>response.json())
+        return this._http.get('api/CRM/GetExtraPassenger?oid=' + oid)
+            .map((response: Response) => <Result<passengerExtra>>response.json())
+            // .do(data => { debugger; console.log('All: ' + JSON.stringify(data)) })
             .catch(this.handleError);
     }
 
@@ -43,9 +36,7 @@ export class PassengerService {
     private handleError(error: Response) {
         // in a real world app, we may send the server to some remote logging infrastructure
         // instead of just logging it to the console
-        console.error(error);
+        console.log(error);
         return Observable.throw(error.json().error || 'Server error');
     }
-
-
 }

@@ -1,16 +1,19 @@
-﻿<header>
+﻿<!--<app-error-message [ErrorMessageIsVisible]="showAlert"></app-error-message>-->
+
+<header>
     <div class="logo">
         <a href="index.html">
             <img src="/images/EL_AL_New_Logo.svg" alt="EL AL logo" />
         </a>
     </div>
-    TUE {{loginDateMonth}} {{loginDateNum}}, {{loginDateYear}} | {{loginDateHour}}
+    TODOX {{loginDateMonth}} {{loginDateNum}}, {{loginDateYear}} | {{loginDateHour}}
  
     <div class="user">
         <a href="#">
-            <a [routerLink]="['/accommodation', '3423' ]">{{userTitle}}</a> 
+            <a  (click)="testDialogBox()" href="javascript:;">{{userTitle}}</a> 
             <img src="/images/businessman.png" alt="dd" />
         </a>
     </div>
 </header>
+<div dialogAnchor></div>
 <router-outlet></router-outlet>

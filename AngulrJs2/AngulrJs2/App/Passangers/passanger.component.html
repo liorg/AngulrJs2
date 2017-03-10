@@ -1,0 +1,82 @@
+﻿<div [@visibilityChanged]="visibility" class="modal-window passenger-details-wrapper" style="opacity: 0;">
+    <a (click)="onClickedExit()" class="close"></a><div class="passenger-details">
+        <div class="flight">
+            <strong>Flight</strong> |    LY{{FlightViewDetail?.number  }}/{{FlightViewDetail?.destination }}
+        </div>
+        <p>
+        {{passenger?.title}}. {{passenger?.firstName}} {{passenger?.lastName}}
+        </p>
+        <div class="info">
+            <app-member [member]="passenger.member"></app-member>
+            TODO NUMBER?
+            <span class="separator"> | </span>
+            <span class="muted">Cabin</span>
+            {{passenger?.cabin}}
+        </div>
+
+        <div class="flight-info">
+            <div>
+                <span class="muted">PRN</span>
+                {{passenger?.pnr}}
+            </div>
+            <div>
+                <span class="muted">Ticket</span>
+                {{passenger?.ticket}}
+            </div>
+            <div>
+                <span class="muted">Class</span>
+                {{(passengerExtra$ | async)?.className}}
+            </div>
+            <div>
+                <span class="muted">Seat</span>
+                {{(passengerExtra$ | async)?.seat}} 
+            </div>
+        </div>
+        <div class="contact">
+            <div>Contact</div>
+            <div class="phone">
+                <p class="muted">Mobile</p>
+               
+                
+                <p>{{(passengerExtra$ | async)?.phone}}</p>
+            </div>
+            <div class="email">
+                <p class="muted">Email</p>
+                <p>{{(passengerExtra$ | async)?.email}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="baggage">
+                <div class="title">Baggage</div>
+                <p class="muted">Suitcases</p>
+                <p>3</p>
+                <br>
+                <p class="muted">Details</p>
+                <p>
+                    0114ly239513 LHR<br>
+                    0114ly239513 LHR<br>
+                    0114ly239513 LHR
+                </p>
+            </div>
+            <div class="connecting">
+                <div class="title">Connecting Flight</div>
+                <div class="connecting-flight">
+                    <p class="muted">Flight</p>
+                    <p>
+                        AA 105 L 29 Jul 5<br>
+                        LHRJFK HK2<br>
+                        1515 1805
+                    </p>
+                </div>
+                <div class="connecting-flight">
+                    <p class="muted">Flight</p>
+                    <p>
+                        AA 105 L 29 Jul 5<br>
+                        LHRJFK HK2<br>
+                        1515 1805
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

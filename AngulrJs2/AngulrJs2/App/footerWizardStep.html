@@ -1,0 +1,5 @@
+﻿<div class="buttons" style="display: block;">
+    <a href="javascript:" [ngClass]="setBackClass()" (click)="prev()" >Back</a>
+    <button [disabled]="setCanSave()" (click)="next(event$)">Next</button>
+</div>
+<!--class="back disabled"-->

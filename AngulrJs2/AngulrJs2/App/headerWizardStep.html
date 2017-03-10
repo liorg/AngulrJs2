@@ -1,0 +1,28 @@
+﻿<div class="header">
+    <div class="flight">
+        Flight |   LY{{FlightViewDetail?.number  }}/{{FlightViewDetail?.destination }}
+    </div>
+    <a class="prev" *ngIf="this.Step!=100" (click)="prev()"><span class="sr-only">Prev Step</span></a>
+    {{titleStep}}
+    <a class="next"  *ngIf="this.Step!=100"  (click)="next()"><span class="sr-only">Next Step</span></a>
+
+    <div *ngIf="this.Step!=100"  class="step-markers">
+        <span [ngClass]="ngClassStep1()">First step</span>
+        <span [ngClass]="ngClassStep2()">Secont step</span>
+        <span [ngClass]="ngClassStep3()">Third step</span>
+        <span [ngClass]="ngClassStep4()">Fourth step</span>
+        <span [ngClass]="ngClassStep5()">Fifth step</span>
+        <span [ngClass]="ngClassStep6()">Sixth step</span>
+        <span [ngClass]="ngClassStep7()">Seventh step</span>
+    </div>
+ 
+    <div class="hamburger"   *ngIf="this.Step!=100"  (click)="hamburger_click()">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span class="sr-only">Show reservation</span>
+    </div>
+</div>
+<reservation-details-view [currentOrder]="currentOrder" [isShow]="isShowHamburger"
+                          (onShow)="showDialogHandler($event)"
+                           [filghtId]="filghtId"></reservation-details-view>

@@ -7,5 +7,9 @@ import '@angular/http';
 import '@angular/router';
 // RxJS
 import 'rxjs';
+//ng2-webstorage
+import 'ng2-webstorage';
+import 'ng2-completer';
+
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...

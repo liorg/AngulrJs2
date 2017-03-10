@@ -1,5 +1,5 @@
 ﻿import {  Injectable, Pipe, PipeTransform} from '@angular/core';
-import { passenger } from './passanger.Model';
+//import { passenger } from './passanger.Model';
 import { passengerDetail } from '../PassengersBackendService.service';
 import { Observable } from 'rxjs/Observable';
 
@@ -8,22 +8,6 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 import { passangerFilter } from './passangerFilter.Model'
 
-@Pipe({
-    name: 'customerSelectedFilter', pure: false
-})
-@Injectable()
-export class CustomerSelectedFilter implements PipeTransform {
-    transform(customers: passenger[], value: boolean): any {
-        //debugger;
-        console.log(value);
-        if (customers != null && customers.length > 0) {
-            return customers.filter(customer => customer.isSelected == value);
-        }
-        else {
-            return [];
-        }
-    }
-}
 @Pipe({
     name: 'passangersSelectedFilter', pure: false
 })
@@ -37,7 +21,7 @@ export class PassangersSelectedFilter implements PipeTransform {
             return passengers.map((d: passengerDetail[]) => d.filter(passenger => passenger.isSelected == value));
 
         }
-         return new Observable<passengerDetail[]>();
+        return new Observable<passengerDetail[]>();
 
     }
 }
@@ -53,16 +37,27 @@ export class passangersDataFilter implements PipeTransform {
         if (passengers != null) {
             return passengers.map((d: passengerDetail[]) =>
                 d.filter(
-                    passenger =>
-                    //    (passangerFilter.name == null || passangerFilter.name == '' || (passenger != null && passangerFilter.name != null && passangerFilter.name != '' &&
-                    //(
-                    //    (passenger.ticket != null && passenger.ticket != '' && passenger.ticket.indexOf(passangerFilter.name) !== -1)
-                    //||  (passenger.lastName != null && passenger.lastName != '' && passenger.lastName.indexOf(passangerFilter.name) !== -1)
-                    //||  (passenger.pnr != null && passenger.pnr != '' && passenger.pnr.indexOf(passangerFilter.name) !== -1)
-                    //)))
-
-                    //    &&
-                        passenger.isSelected == value.isSelected));
+                    passenger => {
+                        if (value.names != null && value.names.length > 0) {
+                            for (let i = 0; i < value.names.length; i++) {
+                                let find = value.names[i] != null && value.names[i] != "" ? value.names[i].toLowerCase() : "";
+                                
+                                if (passenger.isSelected == value.isSelected && value.names[i] != null && value.names[i] != "") {
+                                    if (passenger.lastName != null && passenger.lastName != "" && passenger.lastName.toLowerCase().indexOf(find) > -1) {
+                                        return true;
+                                    }
+                                    if (passenger.pnr != null && passenger.pnr != "" && passenger.pnr.toLowerCase().indexOf(find) > -1) {
+                                        return true;
+                                    }
+                                    if (passenger.ticket != null && passenger.ticket != "" && passenger.ticket.toLowerCase().indexOf(find) > -1) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                        else return passenger.isSelected == value.isSelected;
+                    }
+                ));
 
         }
         return new Observable<passengerDetail[]>();

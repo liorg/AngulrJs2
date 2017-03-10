@@ -1,0 +1,23 @@
+﻿<div id="reservation-details-view">
+    <div class="title">
+        List
+        <span class="badge">{{ (_passengersBackendService.passengers | passangersSelectedOrderFilter:true | async).length}}</span>
+        <a class="close" href="javascript:;" (click)="close_click()"><span class="sr-only">Close</span></a>
+    </div>
+    <div class="info" *ngIf="isLoading">
+        <loader-data></loader-data>
+    </div>
+    <div class="info">
+        <a *ngFor="let passenger of _passengersBackendService.passengers | passangersSelectedOrderFilter:true | async ">
+            <div>{{passenger.title}}. {{passenger.firstName}} {{passenger.lastName}}</div>
+            <!--span class="membership silver"></span-->
+            <app-member [member]="passenger.member"></app-member>
+        </a>
+    </div>
+    <div class="buttons">
+        <p>
+            To continue providing service to Passengers In Delayed Flights NEXT
+        </p>
+        <a class="cancel back" (click)="editList_click()">Edit List</a>
+    </div>
+</div>

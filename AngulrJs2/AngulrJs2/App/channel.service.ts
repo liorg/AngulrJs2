@@ -31,12 +31,17 @@ export class ChannelConfig {
 export class passangerLocked {
     passangerid: string;
     isLocked: boolean;
+    orderid: string;
+    allowAdd: boolean;
+    allowEdit: boolean;
+    expireOrder?: Date;
 }
 
 export class userHandle {
     userid: string;
     name: string;
     flightid: string;
+    uniqueTranId: string;
     passangers: passangerLocked[];
 }
 
@@ -45,9 +50,8 @@ export class SessionStatus {
     trackid: string;
     timestamp: Date;
     users: userHandle[];
+
 }
-
-
 
 class ChannelSubject {
     channel: string;
@@ -139,7 +143,7 @@ export class ChannelService {
                     break;
             }
             let connectionName = ConnectionState[newState];
-            this._titleService.setTitle(connectionName + " " + this.titleName);
+           // this._titleService.setTitle(connectionName + " " + this.titleName);
             // Push the new state on our subject
             this.connectionStateSubject.next(newState);
         });
@@ -192,14 +196,15 @@ export class ChannelService {
     }
 
     ping(): void {
-        debugger;
+        //debugger;
         this.hubProxy.invoke("Ping").done(() => {
-            debugger;
+          //  debugger;
             console.log(`Successfully subscribed to  channel`);
         })
             .fail((error: any) => {
-                debugger;
+             //   debugger;
             });
     }
+ 
 
 }

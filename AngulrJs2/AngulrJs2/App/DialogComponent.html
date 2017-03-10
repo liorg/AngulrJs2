@@ -1,0 +1,13 @@
+﻿<div [@visibilityChanged]="visibility"  class="modal-window error" style="opacity: 0;">
+    <a (click)="onClickedExit()" class="close"></a>
+    <!--<img *ngif="IsWarning==false"  src="/assets/images/alarm.png" alt="Error image">-->
+    <img  src="/assets/images/info.svg"
+          [src]="IsWarning ? '/assets/images/info.svg' : '/assets/images/alarm.png'"
+          alt="Error image" 
+         [class.error-image-info]="!IsWarning"
+         
+        >
+    <div class="title">{{ErrorTitle}}</div>
+    <div class="subtitle">{{ErrorMsg}}</div>
+    <a  (click)="onContinueExit()" class="continue">Continue</a>
+</div>
